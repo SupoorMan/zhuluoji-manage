@@ -1,0 +1,3067 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "侏罗纪小程序接口文档",
+    "description": "版本: 1.0.1",
+    "contact": {
+      "name": "数筑云"
+    },
+    "license": {
+      "name": "The Apache License"
+    },
+    "version": "1.0.1"
+  },
+  "servers": [
+    {
+      "url": "http://47.111.234.21:8888",
+      "description": "Inferred Url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "全局配置管理",
+      "description": "Config Info Controller"
+    },
+    {
+      "name": "售后管理",
+      "description": "After Sales Controller"
+    },
+    {
+      "name": "商品收藏",
+      "description": "Product Stater Controller"
+    },
+    {
+      "name": "小程序收货地址",
+      "description": "Delivery Address Controller"
+    },
+    {
+      "name": "小程序用户",
+      "description": "Applet User Controller"
+    },
+    {
+      "name": "小程序登录记录",
+      "description": "Login Log Controller"
+    },
+    {
+      "name": "小程序通知",
+      "description": "Applet Notify Controller"
+    },
+    {
+      "name": "微信小程序",
+      "description": "We Chat Controller"
+    },
+    {
+      "name": "文件管理",
+      "description": "File Controller"
+    },
+    {
+      "name": "积分商品",
+      "description": "Integral Product Controller"
+    },
+    {
+      "name": "积分商品订单",
+      "description": "Orders Controller"
+    },
+    {
+      "name": "签到",
+      "description": "Sign In Controller"
+    }
+  ],
+  "paths": {
+    "/afterSales/add": {
+      "post": {
+        "tags": [
+          "售后管理"
+        ],
+        "summary": "售后申请",
+        "operationId": "addUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/售后 - AfterSales"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/afterSales/get": {
+      "get": {
+        "tags": [
+          "售后管理"
+        ],
+        "summary": "售后详情查询",
+        "description": "传id参数",
+        "operationId": "getUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "id",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/afterSales/page": {
+      "get": {
+        "tags": [
+          "售后管理"
+        ],
+        "summary": "售后分页查询",
+        "operationId": "pageUsingGET",
+        "parameters": [
+          {
+            "name": "appletUserId",
+            "in": "query",
+            "description": "小程序用户id",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "current",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "currentPage",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "ordersId",
+            "in": "query",
+            "description": "订单id",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "orders[0].asc",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "orders[0].column",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "售后状态: 0.售后申请 1.处理中 2.完成",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/afterSales/update": {
+      "post": {
+        "tags": [
+          "售后管理"
+        ],
+        "summary": "售后处理更新",
+        "operationId": "updateUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/售后 - AfterSales"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/appletNotify/page": {
+      "get": {
+        "tags": [
+          "小程序通知"
+        ],
+        "summary": "我的通知分页查询",
+        "operationId": "pageUsingGET_1",
+        "parameters": [
+          {
+            "name": "appletUserId",
+            "in": "query",
+            "description": "小程序用户id",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "current",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "currentPage",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "orders[0].asc",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "orders[0].column",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "通知类型: 0.站内 1.系统 2.直播预告 3.活动消息 4.订单物流 5.等级 6.积分",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/appletNotify/sendNotify": {
+      "post": {
+        "tags": [
+          "小程序通知"
+        ],
+        "summary": "发送系统消息",
+        "description": "0站内|1系统|2直播预告|3活动消息等消息发送 & 4订单物流|5等级|6积分等消息",
+        "operationId": "sendNotifyUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/通知 - AppletNotify"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/auser/getUser": {
+      "get": {
+        "tags": [
+          "小程序用户"
+        ],
+        "summary": "获取用户信息",
+        "description": "无参",
+        "operationId": "getUserUsingGET",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/auser/page": {
+      "get": {
+        "tags": [
+          "小程序用户"
+        ],
+        "summary": "小程序用户分页查询",
+        "description": "后台管理使用",
+        "operationId": "pageUsingGET_2",
+        "parameters": [
+          {
+            "name": "avatarUrl",
+            "in": "query",
+            "description": "头像",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "birthday",
+            "in": "query",
+            "description": "生日",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "createTime",
+            "in": "query",
+            "description": "创建时间",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "current",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "currentPage",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "dyId",
+            "in": "query",
+            "description": "DY账号",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "experience",
+            "in": "query",
+            "description": "经验",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "gender",
+            "in": "query",
+            "description": "0.女 1.男",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "growth",
+            "in": "query",
+            "description": "成长值",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "id",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "integral",
+            "in": "query",
+            "description": "积分",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "number",
+              "format": "bigdecimal"
+            }
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "description": "等级",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "nickname",
+            "in": "query",
+            "description": "昵名",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "openid",
+            "in": "query",
+            "description": "openid",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orders[0].asc",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "orders[0].column",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "phone",
+            "in": "query",
+            "description": "手机号",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "redbookId",
+            "in": "query",
+            "description": "小红书账号",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "description": "状态: 0.禁用 1.可用",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "tbId",
+            "in": "query",
+            "description": "TB账号",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "uid",
+            "in": "query",
+            "description": "uid",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "updateTime",
+            "in": "query",
+            "description": "更新时间",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/auser/update": {
+      "post": {
+        "tags": [
+          "小程序用户"
+        ],
+        "summary": "小程序用户更新",
+        "description": "传id和需要更新的字段即可",
+        "operationId": "updateUsingPOST_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/小程序用户 - AppletUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/configInfo/add": {
+      "post": {
+        "tags": [
+          "全局配置管理"
+        ],
+        "summary": "新增配置",
+        "description": "配置信息需要前后端约定",
+        "operationId": "addUsingPOST_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/全局配置 - ConfigInfo"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/configInfo/delete": {
+      "post": {
+        "tags": [
+          "全局配置管理"
+        ],
+        "summary": "删除配置",
+        "operationId": "deleteUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/全局配置 - ConfigInfo"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/configInfo/get": {
+      "get": {
+        "tags": [
+          "全局配置管理"
+        ],
+        "summary": "查询指定配置",
+        "description": "配置信息需要前后端约定",
+        "operationId": "getUsingGET_1",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "query",
+            "description": "key",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "value",
+            "in": "query",
+            "description": "value",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/configInfo/list": {
+      "get": {
+        "tags": [
+          "全局配置管理"
+        ],
+        "summary": "查询配置列表",
+        "operationId": "listUsingGET",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "query",
+            "description": "key",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/configInfo/update": {
+      "post": {
+        "tags": [
+          "全局配置管理"
+        ],
+        "summary": "更新配置",
+        "description": "配置信息需要前后端约定",
+        "operationId": "updateUsingPOST_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/全局配置 - ConfigInfo"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/appletDeliveryAddress/add": {
+      "post": {
+        "tags": [
+          "小程序收货地址"
+        ],
+        "summary": "新增收货地址",
+        "operationId": "addUsingPOST_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/收货地址 - AppletDeliveryAddress"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/appletDeliveryAddress/list": {
+      "get": {
+        "tags": [
+          "小程序收货地址"
+        ],
+        "summary": "查询小程序用户收货地址",
+        "operationId": "listUsingGET_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/appletDeliveryAddress/update": {
+      "post": {
+        "tags": [
+          "小程序收货地址"
+        ],
+        "summary": "更新收货地址",
+        "operationId": "updateUsingPOST_3",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/收货地址 - AppletDeliveryAddress"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/file/upload": {
+      "post": {
+        "tags": [
+          "文件管理"
+        ],
+        "summary": "文件上传",
+        "description": "文件上传 传项目名称",
+        "operationId": "uploadUsingPOST",
+        "parameters": [
+          {
+            "name": "area",
+            "in": "query",
+            "description": "传项目名称",
+            "required": true,
+            "style": "form",
+            "allowReserved": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "description": "file",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/product/add": {
+      "post": {
+        "tags": [
+          "积分商品"
+        ],
+        "summary": "新增积分商品",
+        "operationId": "addUsingPOST_3",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/积分商品 - IntegralProduct"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/product/delete": {
+      "post": {
+        "tags": [
+          "积分商品"
+        ],
+        "summary": "删除积分商品",
+        "operationId": "deleteUsingPOST_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/积分商品 - IntegralProduct"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/product/get": {
+      "get": {
+        "tags": [
+          "积分商品"
+        ],
+        "summary": "积分商品详情",
+        "description": "详情查询",
+        "operationId": "getUsingGET_2",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "query",
+            "description": "productId",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/product/page": {
+      "get": {
+        "tags": [
+          "积分商品"
+        ],
+        "summary": "积分商品分页查询",
+        "description": "分页查询",
+        "operationId": "pageUsingGET_3",
+        "parameters": [
+          {
+            "name": "current",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "currentPage",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "orders[0].asc",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "orders[0].column",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/product/update": {
+      "post": {
+        "tags": [
+          "积分商品"
+        ],
+        "summary": "更新积分商品",
+        "operationId": "updateUsingPOST_4",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/积分商品 - IntegralProduct"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/loginLog/page": {
+      "get": {
+        "tags": [
+          "小程序登录记录"
+        ],
+        "summary": "用户登录记录分页查询",
+        "operationId": "pageUsingGET_4",
+        "parameters": [
+          {
+            "name": "current",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "currentPage",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "endTime",
+            "in": "query",
+            "description": "结束时间",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "orders[0].asc",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "orders[0].column",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "startTime",
+            "in": "query",
+            "description": "开始时间",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "类型: 0.小程序 1.系统后台",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/orders/add0": {
+      "post": {
+        "tags": [
+          "积分商品订单"
+        ],
+        "summary": "创建订单第一步",
+        "description": "点击兑换触发",
+        "operationId": "addUsingPOST_4",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/积分商品订单 - Orders"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/orders/add1": {
+      "post": {
+        "tags": [
+          "积分商品订单"
+        ],
+        "summary": "创建订单第二步",
+        "description": "确认兑换触发",
+        "operationId": "add1UsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/积分商品订单 - Orders"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/orders/cancel": {
+      "post": {
+        "tags": [
+          "积分商品订单"
+        ],
+        "summary": "取消订单",
+        "description": "传订单id即可",
+        "operationId": "cancelUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/积分商品订单 - Orders"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/orders/page": {
+      "get": {
+        "tags": [
+          "积分商品订单"
+        ],
+        "summary": "订单分页",
+        "operationId": "pageUsingGET_5",
+        "parameters": [
+          {
+            "name": "appletUserId",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "current",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "currentPage",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "orders[0].asc",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "orders[0].column",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/orders/updateAddress": {
+      "post": {
+        "tags": [
+          "积分商品订单"
+        ],
+        "summary": "更新收货地址",
+        "description": "传id和地址即可",
+        "operationId": "updateAddressUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/积分商品订单 - Orders"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/orders/updateStatus": {
+      "post": {
+        "tags": [
+          "积分商品订单"
+        ],
+        "summary": "订单发货中",
+        "description": "传id和status即可",
+        "operationId": "updateStatusUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/积分商品订单 - Orders"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/productStater/add": {
+      "post": {
+        "tags": [
+          "商品收藏"
+        ],
+        "summary": "新增商品收藏",
+        "operationId": "addUsingPOST_5",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/商品收藏 - ProductStater"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/productStater/delete": {
+      "post": {
+        "tags": [
+          "商品收藏"
+        ],
+        "summary": "删除商品收藏",
+        "operationId": "deleteUsingPOST_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/商品收藏 - ProductStater"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/productStater/update": {
+      "post": {
+        "tags": [
+          "商品收藏"
+        ],
+        "summary": "更新商品收藏",
+        "operationId": "updateUsingPOST_5",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/商品收藏 - ProductStater"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/signIn/list": {
+      "get": {
+        "tags": [
+          "签到"
+        ],
+        "summary": "查询签到集合",
+        "operationId": "listUsingGET_2",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "description": "时间字符串(yyyy-MM-dd)",
+            "required": true,
+            "style": "form",
+            "allowReserved": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/signIn/sign": {
+      "post": {
+        "tags": [
+          "签到"
+        ],
+        "summary": "签到",
+        "operationId": "signUsingPOST",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/wx/auth/logout": {
+      "post": {
+        "tags": [
+          "微信小程序"
+        ],
+        "summary": "微信小程序退出",
+        "description": "退出",
+        "operationId": "logoutUsingPOST",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    },
+    "/wx/login": {
+      "post": {
+        "tags": [
+          "微信小程序"
+        ],
+        "summary": "微信小程序登录",
+        "description": "微信登录获取OpenId,SessionKey,unionid",
+        "operationId": "loginUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/微信登录 - WeChatLogin"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/统一响应体 - Result"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Authorization": [
+              "global"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "全局配置 - ConfigInfo": {
+        "title": "全局配置 - ConfigInfo",
+        "type": "object",
+        "properties": {
+          "context": {
+            "type": "string",
+            "description": "context",
+            "refType": null
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time",
+            "refType": null
+          },
+          "details": {
+            "type": "string",
+            "description": "details",
+            "refType": null
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "refType": null
+          },
+          "key": {
+            "type": "string",
+            "description": "key",
+            "refType": null
+          },
+          "state": {
+            "type": "integer",
+            "description": "状态: 0.关闭 1.开启",
+            "format": "int32",
+            "refType": null
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time",
+            "refType": null
+          },
+          "value": {
+            "type": "string",
+            "description": "value",
+            "refType": null
+          }
+        },
+        "description": "配置表"
+      },
+      "售后 - AfterSales": {
+        "title": "售后 - AfterSales",
+        "type": "object",
+        "properties": {
+          "appletUserId": {
+            "type": "integer",
+            "description": "小程序用户id",
+            "format": "int32",
+            "refType": null
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time",
+            "refType": null
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "refType": null
+          },
+          "images": {
+            "type": "string",
+            "description": "申请图片",
+            "refType": null
+          },
+          "message": {
+            "type": "string",
+            "description": "申请信息",
+            "refType": null
+          },
+          "ordersId": {
+            "type": "integer",
+            "description": "订单id",
+            "format": "int32",
+            "refType": null
+          },
+          "status": {
+            "type": "integer",
+            "description": "售后状态: 0.售后申请 1.处理中 2.完成",
+            "format": "int32",
+            "refType": null
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time",
+            "refType": null
+          }
+        },
+        "description": "订单售后表"
+      },
+      "商品收藏 - ProductStater": {
+        "title": "商品收藏 - ProductStater",
+        "type": "object",
+        "properties": {
+          "appletUserId": {
+            "type": "integer",
+            "description": "小程序用户id",
+            "format": "int32",
+            "refType": null
+          },
+          "createTime": {
+            "type": "string",
+            "description": "创建时间",
+            "format": "date-time",
+            "refType": null
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "refType": null
+          },
+          "productId": {
+            "type": "integer",
+            "description": " 商品id",
+            "format": "int32",
+            "refType": null
+          },
+          "status": {
+            "type": "integer",
+            "description": "收藏: -1.未收藏 1.收藏",
+            "format": "int32",
+            "refType": null
+          }
+        },
+        "description": "商品收藏表"
+      },
+      "小程序用户 - AppletUser": {
+        "title": "小程序用户 - AppletUser",
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "所在地区",
+            "refType": null
+          },
+          "avatarUrl": {
+            "type": "string",
+            "description": "头像",
+            "refType": null
+          },
+          "birthday": {
+            "type": "string",
+            "description": "生日",
+            "refType": null
+          },
+          "createTime": {
+            "type": "string",
+            "description": "创建时间",
+            "format": "date-time",
+            "refType": null
+          },
+          "dyId": {
+            "type": "string",
+            "description": "DY账号",
+            "refType": null
+          },
+          "experience": {
+            "type": "integer",
+            "description": "经验",
+            "format": "int32",
+            "refType": null
+          },
+          "gender": {
+            "type": "integer",
+            "description": "0.女 1.男",
+            "format": "int32",
+            "refType": null
+          },
+          "growth": {
+            "type": "integer",
+            "description": "成长值",
+            "format": "int32",
+            "refType": null
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "refType": null
+          },
+          "integral": {
+            "type": "number",
+            "description": "积分",
+            "format": "bigdecimal",
+            "refType": null
+          },
+          "level": {
+            "type": "integer",
+            "description": "等级",
+            "format": "int32",
+            "refType": null
+          },
+          "nickname": {
+            "type": "string",
+            "description": "昵名",
+            "refType": null
+          },
+          "openid": {
+            "type": "string",
+            "description": "openid",
+            "refType": null
+          },
+          "phone": {
+            "type": "string",
+            "description": "手机号",
+            "refType": null
+          },
+          "redbookId": {
+            "type": "string",
+            "description": "小红书账号",
+            "refType": null
+          },
+          "sessionKey": {
+            "type": "string",
+            "refType": null
+          },
+          "state": {
+            "type": "integer",
+            "description": "状态: 0.禁用 1.可用",
+            "format": "int32",
+            "refType": null
+          },
+          "tbId": {
+            "type": "string",
+            "description": "TB账号",
+            "refType": null
+          },
+          "uid": {
+            "type": "string",
+            "description": "uid",
+            "refType": null
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "更新时间",
+            "format": "date-time",
+            "refType": null
+          }
+        }
+      },
+      "微信用户信息 - WeChatUserInfo": {
+        "title": "微信用户信息 - WeChatUserInfo",
+        "type": "object",
+        "properties": {
+          "avatarUrl": {
+            "type": "string",
+            "description": "头像url"
+          },
+          "city": {
+            "type": "string",
+            "description": "城市"
+          },
+          "country": {
+            "type": "string",
+            "description": "区县"
+          },
+          "gender": {
+            "type": "integer",
+            "description": "性别",
+            "format": "int32"
+          },
+          "language": {
+            "type": "string",
+            "description": "语言"
+          },
+          "nickName": {
+            "type": "string",
+            "description": "昵名"
+          },
+          "province": {
+            "type": "string",
+            "description": "省"
+          }
+        }
+      },
+      "微信登录 - WeChatLogin": {
+        "title": "微信登录 - WeChatLogin",
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "微信登录凭证[code]"
+          },
+          "userInfo": {
+            "description": "微信用户信息",
+            "$ref": "#/components/schemas/微信用户信息 - WeChatUserInfo"
+          }
+        }
+      },
+      "收货地址 - AppletDeliveryAddress": {
+        "title": "收货地址 - AppletDeliveryAddress",
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "详细地址"
+          },
+          "appletUserId": {
+            "type": "integer",
+            "description": "小程序用户id",
+            "format": "int32"
+          },
+          "area": {
+            "type": "string",
+            "description": "区"
+          },
+          "city": {
+            "type": "string",
+            "description": "市"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "defaults": {
+            "type": "integer",
+            "description": "默认地址: 0.否 1.是",
+            "format": "int32"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "phone": {
+            "type": "string",
+            "description": "手机号"
+          },
+          "province": {
+            "type": "string",
+            "description": "省"
+          },
+          "receiver": {
+            "type": "string",
+            "description": "收件人"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "积分商品 - IntegralProduct": {
+        "title": "积分商品 - IntegralProduct",
+        "type": "object",
+        "properties": {
+          "createTime": {
+            "type": "string",
+            "format": "date-time",
+            "refType": null
+          },
+          "details": {
+            "type": "string",
+            "description": "详情图文内容",
+            "refType": null
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "refType": null
+          },
+          "integral": {
+            "type": "number",
+            "description": "价值积分",
+            "format": "bigdecimal",
+            "refType": null
+          },
+          "introduction": {
+            "type": "string",
+            "description": "简介",
+            "refType": null
+          },
+          "productImage": {
+            "type": "string",
+            "description": "商品图片",
+            "refType": null
+          },
+          "productName": {
+            "type": "string",
+            "description": "商品名称",
+            "refType": null
+          },
+          "productType": {
+            "type": "integer",
+            "description": "商品类型: 0.玻璃餐具 1.睡衣浴袍 2.床上用品 3.家具装点",
+            "format": "int32",
+            "refType": null
+          },
+          "purchaseLimit": {
+            "type": "integer",
+            "description": "限购数量",
+            "format": "int32",
+            "refType": null
+          },
+          "recommend": {
+            "type": "integer",
+            "description": "推荐: 0.不是 1.是",
+            "format": "int32",
+            "refType": null
+          },
+          "shopping": {
+            "type": "integer",
+            "description": "0.下架 1.上架",
+            "format": "int32",
+            "refType": null
+          },
+          "starter": {
+            "type": "integer",
+            "description": "红星数",
+            "format": "int32",
+            "refType": null
+          },
+          "state": {
+            "type": "integer",
+            "description": "状态: 0.正常 1.删除",
+            "format": "int32",
+            "refType": null
+          },
+          "tagType": {
+            "type": "integer",
+            "description": "标签类型: 0.新品 1.人气",
+            "format": "int32",
+            "refType": null
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time",
+            "refType": null
+          }
+        }
+      },
+      "积分商品订单 - Orders": {
+        "title": "积分商品订单 - Orders",
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "string",
+            "description": "购买规格/数量",
+            "refType": null
+          },
+          "appletUserId": {
+            "type": "integer",
+            "description": "用户id",
+            "format": "int32",
+            "refType": null
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time",
+            "refType": null
+          },
+          "expressFee": {
+            "type": "number",
+            "description": "运费",
+            "format": "bigdecimal",
+            "refType": null
+          },
+          "finishTime": {
+            "type": "string",
+            "description": "完成时间",
+            "format": "date-time",
+            "refType": null
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "refType": null
+          },
+          "integral": {
+            "type": "number",
+            "description": "价值积分",
+            "format": "bigdecimal",
+            "refType": null
+          },
+          "orderNo": {
+            "type": "string",
+            "description": "订单号",
+            "refType": null
+          },
+          "payTime": {
+            "type": "string",
+            "description": "支付时间",
+            "format": "date-time",
+            "refType": null
+          },
+          "productId": {
+            "type": "integer",
+            "description": "商品id",
+            "format": "int32",
+            "refType": null
+          },
+          "receiveAddress": {
+            "type": "string",
+            "description": "收货地址详情",
+            "refType": null
+          },
+          "state": {
+            "type": "integer",
+            "description": "状态: 0.正常 1.用户删除 2.系统删除",
+            "format": "int32",
+            "refType": null
+          },
+          "status": {
+            "type": "integer",
+            "description": "订单状态: -1.取消 0.下单未支付 1.下单支付完成 2.发货中 3.签收完成",
+            "format": "int32",
+            "refType": null
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time",
+            "refType": null
+          }
+        },
+        "description": "积分商品订单"
+      },
+      "统一响应体 - Result": {
+        "title": "统一响应体 - Result",
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应码: 200.成功 500.错误 1000以上.失败",
+            "format": "int32"
+          },
+          "data": {
+            "type": "object",
+            "description": "返回数据"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应消息"
+          }
+        }
+      },
+      "通知 - AppletNotify": {
+        "title": "通知 - AppletNotify",
+        "type": "object",
+        "properties": {
+          "appletUserId": {
+            "type": "integer",
+            "description": "小程序用户id",
+            "format": "int32"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "description": "通知消息/模板"
+          },
+          "state": {
+            "type": "integer",
+            "description": "状态: 0.关闭 1.开启",
+            "format": "int32"
+          },
+          "type": {
+            "type": "integer",
+            "description": "通知类型: 0.站内 1.系统 2.直播预告 3.活动消息 4.订单物流 5.等级 6.积分",
+            "format": "int32"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "通知表"
+      }
+    },
+    "securitySchemes": {
+      "uid": {
+        "type": "apiKey",
+        "name": "uid",
+        "in": "header"
+      },
+      "token": {
+        "type": "apiKey",
+        "name": "token",
+        "in": "header"
+      }
+    }
+  }
+}
