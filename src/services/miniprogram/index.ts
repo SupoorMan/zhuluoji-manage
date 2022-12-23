@@ -13,7 +13,7 @@ import * as record from './record';
 import * as order from './orders';
 import * as prodCollection from './prodCollection';
 import * as signIn from './signIn';
-import * as miniprogram from './miniprogram';
+import * as manageUser from './manageUser';
 export default {
   salesAfter,
   notices,
@@ -26,5 +26,5 @@ export default {
   order,
   prodCollection,
   signIn,
-  miniprogram,
+  manageUser,
 };

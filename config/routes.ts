@@ -15,16 +15,10 @@ export default [
     path: '/user',
     layout: false,
     routes: [
-      // {
-      //   name: '登录',
-      //   path: '/user/login',
-      //   component: './User/Login',
-      // },
       {
-        name: '小程序用户',
-        icon: 'table',
-        path: '/user/manage',
-        component: './User/Searching',
+        name: '登录',
+        path: '/user/login',
+        component: './User/Login',
       },
     ],
   },
@@ -38,7 +32,7 @@ export default [
     path: '/admin',
     name: '管理员',
     icon: 'crown',
-    access: 'canAdmin',
+    // access: 'canAdmin',
     routes: [
       {
         path: '/admin',
@@ -52,22 +46,28 @@ export default [
     ],
   },
   {
-    name: '积分商品',
-    icon: 'table',
+    name: '商品',
+    icon: 'tags',
     path: '/product',
     component: './product',
   },
 
   {
     name: '订单',
-    icon: 'table',
+    icon: 'profile',
     path: '/order',
     component: './order',
   },
   {
+    name: '会员',
+    icon: 'team',
+    path: '/user/manage',
+    component: './User/Searching',
+  },
+  {
     name: '配置',
     icon: 'setting',
-    path: '/product',
+    path: '/setting',
     component: './setting',
   },
   {

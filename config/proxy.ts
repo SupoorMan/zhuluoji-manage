@@ -12,9 +12,9 @@
 export default {
   dev: {
     '/api/': {
-      target: 'http://47.111.234.21/',
+      target: 'http://47.111.234.21:8888/',
       changeOrigin: true,
-      pathRewrite: { '^': '' },
+      pathRewrite: { '/api': '' },
     },
   },
   /**

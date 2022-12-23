@@ -26,7 +26,7 @@ export async function pageUserInfo(
 }
 
 /** 小程序用户更新 传id和需要更新的字段即可 POST /auser/update */
-export async function updateUsingPOST1(body: API.AppletUser, options?: { [key: string]: any }) {
+export async function updateUser(body: API.AppletUser, options?: { [key: string]: any }) {
   return request<API.CommonResult>('/auser/update', {
     method: 'POST',
     headers: {

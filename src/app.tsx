@@ -1,13 +1,12 @@
 import Footer from '@/components/Footer';
 import RightContent from '@/components/RightContent';
 import { LinkOutlined } from '@ant-design/icons';
-import type { Settings as LayoutSettings } from '@ant-design/pro-components';
-import { SettingDrawer } from '@ant-design/pro-components';
+import { PageContainer, PageLoading, Settings as LayoutSettings } from '@ant-design/pro-components';
+// import { SettingDrawer } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
-// import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 import React from 'react';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -22,14 +21,12 @@ export async function getInitialState(): Promise<{
   fetchUserInfo?: () => Promise<API.AppletUser | undefined>;
 }> {
   const fetchUserInfo = async () => {
-    // try {
-    //   const msg = await queryCurrentUser({
-    //     skipErrorHandler: true,
-    //   });
-    //   return msg.data;
-    // } catch (error) {
-    //   history.push(loginPath);
-    // }
+    try {
+      const msg = localStorage.getItem('user');
+      return msg ? JSON.parse(msg) : undefined;
+    } catch (error) {
+      history.push(loginPath);
+    }
     return undefined;
   };
   // 如果不是登录页面，执行
@@ -49,37 +46,60 @@ export async function getInitialState(): Promise<{
 }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
-export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
+export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
     rightContentRender: () => <RightContent />,
     footerRender: () => <Footer />,
     onPageChange: () => {
       // 如果没有登录，重定向到 login
-      // const { location } = history;
-      // if (!initialState?.currentUser && location.pathname !== loginPath) {
-      //   history.push(loginPath);
-      // }
+      const { location } = history;
+      if (!initialState?.currentUser && location.pathname !== loginPath) {
+        history.push(loginPath);
+      }
     },
-    layoutBgImgList: [
-      {
-        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/D2LWSqNny4sAAAAAAAAAAAAAFl94AQBr',
-        left: 85,
-        bottom: 100,
-        height: '303px',
+    style: {
+      height: '100vh',
+    },
+    token: {
+      header: {
+        colorBgHeader: '#fff',
+        //   colorHeaderTitle: '#595959',
+        //   colorTextMenu: '#dfdfdf',
+        //   colorTextMenuSecondary: '#dfdfdf',
+        //   colorTextMenuSelected: '#fff',
+        //   colorBgMenuItemSelected: '#22272b',
+        //   colorTextRightActionsItem: '#dfdfdf',
       },
-      {
-        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/C2TWRpJpiC0AAAAAAAAAAAAAFl94AQBr',
-        bottom: -68,
-        right: -45,
-        height: '303px',
+      sider: {
+        colorMenuBackground: '#fff',
+        // colorMenuItemDivider: '#dfdfdf',
+        // colorTextMenu: '#fff',
+        colorTextMenuSelected: '#6662d9',
+        colorBgMenuItemSelected: '#f3f0ff',
+        colorBgMenuItemHover: '#f3f0ff',
+        colorBgMenuItemCollapsedHover: '#f3f0ff',
       },
-      {
-        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/F6vSTbj8KpYAAAAAAAAAAAAAFl94AQBr',
-        bottom: 0,
-        left: 0,
-        width: '331px',
-      },
-    ],
+    },
+    // layoutBgImgList: [
+    //   {
+    //     src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/D2LWSqNny4sAAAAAAAAAAAAAFl94AQBr',
+    //     left: 85,
+    //     bottom: 100,
+    //     height: '303px',
+    //   },
+    //   {
+    //     src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/C2TWRpJpiC0AAAAAAAAAAAAAFl94AQBr',
+    //     bottom: -68,
+    //     right: -45,
+    //     height: '303px',
+    //   },
+    //   {
+    //     src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/F6vSTbj8KpYAAAAAAAAAAAAAFl94AQBr',
+    //     bottom: 0,
+    //     left: 0,
+    //     width: '331px',
+    //   },
+    // ],
     links: isDev
       ? [
           <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
@@ -93,11 +113,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
     childrenRender: (children) => {
-      // if (initialState?.loading) return <PageLoading />;
+      if (initialState?.loading) return <PageLoading />;
       return (
         <>
           {children}
-          <SettingDrawer
+          {/* <SettingDrawer
             disableUrlParams
             enableDarkTheme
             settings={initialState?.settings}
@@ -107,7 +127,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
                 settings,
               }));
             }}
-          />
+          /> */}
         </>
       );
     },

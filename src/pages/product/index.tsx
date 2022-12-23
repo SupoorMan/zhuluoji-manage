@@ -1,7 +1,12 @@
 /* eslint-disable no-debugger */
 import { addProd, deleteProd, getProds, updateProd } from '@/services/miniprogram/product';
 import { PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import {
+  ActionType,
+  ProColumns,
+  ProDescriptionsItemProps,
+  TableDropdown,
+} from '@ant-design/pro-components';
 import { PageContainer, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import { Button, Drawer, Input, message } from 'antd';
 import React, { useRef, useState } from 'react';
@@ -87,8 +92,8 @@ const TableList: React.FC = () => {
   const columns: ProColumns<API.IntegralProduct>[] = [
     {
       title: '商品名称',
-      dataIndex: 'name',
-      tip: 'The rule name is the unique key',
+      dataIndex: 'productName',
+      hideInSearch: true,
       render: (dom, entity) => {
         return (
           <a
@@ -111,6 +116,8 @@ const TableList: React.FC = () => {
       title: '价值',
       dataIndex: 'integral',
       valueType: 'digit',
+      hideInSearch: true,
+      sorter: true,
       renderText: (val: string) => `${val} 积分`,
     },
 
@@ -118,7 +125,6 @@ const TableList: React.FC = () => {
       title: '是否推荐',
       dataIndex: 'recommend',
       sorter: true,
-      hideInForm: true,
       renderText: (val: string) => `${val}万`,
     },
     {
@@ -164,9 +170,9 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '更新事件',
+      title: '更新时间',
       sorter: true,
-      dataIndex: 'updatedAt',
+      dataIndex: 'updateTime',
       valueType: 'dateTime',
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
         const status = form.getFieldValue('status');
@@ -182,28 +188,37 @@ const TableList: React.FC = () => {
     {
       title: '简介',
       dataIndex: 'introduction',
+      hideInSearch: true,
     },
     {
-      title: 'Operating',
+      title: '操作',
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
         <a
           key="config"
           onClick={() => {
-            handleUpdateModalOpen(true);
+            // handleUpdateModalOpen(true);
             setCurrentRow(record);
           }}
         >
           编辑
         </a>,
         <a key="subscribeAlert">配置图文详情</a>,
+        <TableDropdown
+          key="actionGroup"
+          onSelect={() => actionRef?.current?.reload()}
+          menus={[
+            { key: 'copy', name: '上架' },
+            { key: 'delete', name: '删除' },
+          ]}
+        />,
       ],
     },
   ];
 
   return (
-    <PageContainer>
+    <PageContainer header={{ title: '' }}>
       <ProTable<API.IntegralProduct, API.PageParams>
         headerTitle="积分商品管理"
         actionRef={actionRef}
@@ -216,14 +231,13 @@ const TableList: React.FC = () => {
             type="primary"
             key="primary"
             onClick={() => {
-              handleModalOpen(true);
+              // handleModalOpen(true);
             }}
           >
             <PlusOutlined /> 新建
           </Button>,
         ]}
         request={async (params) => {
-          debugger;
           const { data } = await getProds(params);
           console.log(data);
           return { data: data?.list || 0, success: true, total: data?.totle || 0 };

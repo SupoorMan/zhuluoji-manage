@@ -127,13 +127,14 @@ export default defineConfig({
     {
       requestLibPath: "import { request } from '@umijs/max'",
       schemaPath: 'http://47.111.234.21:8888/v3/api-docs',
-      projectName: 'miniprogram',
+      projectName: 'newminiprogram',
     },
   ],
-  mfsu: {
-    strategy: 'normal',
-  },
+  // mfsu: {
+  //   esbuild: false,
+  //   strategy: 'normal',
+  // },
   requestRecord: {},
-  keepalive: [/./],
-  tabsLayout: {},
+  // keepalive: [/./],
+  // tabsLayout: {},
 });

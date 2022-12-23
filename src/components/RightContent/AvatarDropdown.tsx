@@ -32,12 +32,12 @@ const Name = () => {
     };
   });
 
-  return <span className={`${nameClassName} anticon`}>{currentUser?.name}</span>;
+  return <span className={`${nameClassName} anticon`}>{currentUser?.phone}</span>;
 };
 
 const AvatarLogo = () => {
-  const { initialState } = useModel('@@initialState');
-  const { currentUser } = initialState || {};
+  // const { initialState } = useModel('@@initialState');
+  // const { currentUser } = initialState || {};
 
   const avatarClassName = useEmotionCss(({ token }) => {
     return {
@@ -51,7 +51,7 @@ const AvatarLogo = () => {
     };
   });
 
-  return <Avatar size="small" className={avatarClassName} src={currentUser?.avatar} alt="avatar" />;
+  return <Avatar size="small" className={avatarClassName} src={<UserOutlined />} alt="avatar" />;
 };
 
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
@@ -60,6 +60,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
    */
   const loginOut = async () => {
     // await outLogin();
+    localStorage.clear();
     const { search, pathname } = window.location;
     const urlParams = new URL(window.location.href).searchParams;
     /** 此方法会跳转到 redirect 参数所在的位置 */
@@ -124,7 +125,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
 
   const { currentUser } = initialState;
 
-  if (!currentUser || !currentUser.name) {
+  if (!currentUser || !currentUser.phone) {
     return loading;
   }
 

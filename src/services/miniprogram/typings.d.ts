@@ -20,6 +20,23 @@ declare namespace API {
     id?: number;
   }
 
+  type ManageUser = {
+    createTime?: string;
+    id?: number;
+    /** 手机号 */
+    phone?: string;
+    /** 密码 */
+    pwd?: string;
+    /** 状态: 0.禁用 1.可用 */
+    state?: number;
+    updateTime?: string;
+  };
+  type LoginParams = {
+    /** 手机号 */
+    phone?: string;
+    /** 密码 */
+    pwd?: string;
+  };
   type Order = {
     /** 购买规格/数量 */
     amount?: string;
@@ -195,7 +212,9 @@ declare namespace API {
     receiver?: string;
     updateTime?: string;
   }
-
+  interface UserParams extends PageParams {
+    phone?: string;
+  }
   interface CommonResult {
     /** 响应码: 200.成功 500.错误 1000以上.失败 */
     code?: number;
