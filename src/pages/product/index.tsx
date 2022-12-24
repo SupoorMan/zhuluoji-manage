@@ -118,14 +118,23 @@ const TableList: React.FC = () => {
       valueType: 'digit',
       hideInSearch: true,
       sorter: true,
-      renderText: (val: string) => `${val} 积分`,
+      render: (_, record) => record.integral + ` 积分`,
     },
 
     {
       title: '是否推荐',
       dataIndex: 'recommend',
       sorter: true,
-      renderText: (val: string) => `${val}万`,
+      valueEnum: {
+        0: {
+          text: '是',
+          status: 'Default',
+        },
+        1: {
+          text: '否',
+          status: 'Processing',
+        },
+      },
     },
     {
       title: '上架状态',
@@ -240,7 +249,7 @@ const TableList: React.FC = () => {
         request={async (params) => {
           const { data } = await getProds(params);
           console.log(data);
-          return { data: data?.list || 0, success: true, total: data?.totle || 0 };
+          return { data: data?.records || 0, success: true, total: data?.totle || 0 };
         }}
         columns={columns}
         // rowSelection={{

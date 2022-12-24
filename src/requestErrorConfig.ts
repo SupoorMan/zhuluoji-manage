@@ -89,9 +89,8 @@ export const errorConfig: RequestConfig = {
   requestInterceptors: [
     (config: RequestOptions) => {
       // 拦截请求配置，进行个性化处理。
-      console.log(config?.url);
       const url = '/api' + config?.url;
-      return { ...config, url };
+      return { ...config, url, withCredentials: true };
     },
   ],
 

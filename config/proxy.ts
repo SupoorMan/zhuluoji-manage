@@ -12,7 +12,7 @@
 export default {
   dev: {
     '/api/': {
-      target: 'http://47.111.234.21:8888/',
+      target: 'http://www.uian.net:8888/',
       changeOrigin: true,
       pathRewrite: { '/api': '' },
     },

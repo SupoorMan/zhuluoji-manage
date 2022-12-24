@@ -1,33 +1,37 @@
+import { addUser } from '@/services/miniprogram/manageUser';
 import { pageUserInfo } from '@/services/miniprogram/users';
 import { PlusOutlined } from '@ant-design/icons';
 import {
   ActionType,
+  ModalForm,
   ProColumns,
   ProDescriptionsItemProps,
+  ProFormText,
+  ProFormTextArea,
   TableDropdown,
 } from '@ant-design/pro-components';
 import { PageContainer, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import { Button, Drawer, Input, message } from 'antd';
 import React, { useRef, useState } from 'react';
 
-// /**
-//  * @en-US Add node
-//  * @zh-CN 添加节点
-//  * @param fields
-//  */
-// const handleAdd = async (fields: API.AppletUser) => {
-//   const hide = message.loading('正在添加');
-//   try {
-//     await addProd({ ...fields });
-//     hide();
-//     message.success('Added successfully');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('Adding failed, please try again!');
-//     return false;
-//   }
-// };
+/**
+ * @en-US Add node
+ * @zh-CN 添加节点
+ * @param fields
+ */
+const handleAdd = async (fields: API.AppletUser) => {
+  const hide = message.loading('正在添加');
+  try {
+    await addUser({ ...fields });
+    hide();
+    message.success('Added successfully');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('Adding failed, please try again!');
+    return false;
+  }
+};
 
 // /**
 //  * @en-US Update node
@@ -75,7 +79,7 @@ const MemberList: React.FC = () => {
   /**
    * @zh-CN 新建窗口的弹窗
    *  */
-  // const [createModalOpen, handleModalOpen] = useState<boolean>(false);
+  const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   /**
    * @en-US The pop-up window of the distribution update window
    * @zh-CN 分布更新窗口的弹窗
@@ -112,7 +116,7 @@ const MemberList: React.FC = () => {
       valueType: 'digit',
       hideInSearch: true,
       sorter: true,
-      renderText: (val: string) => `${val} 积分`,
+      renderText: (val) => `${val} 积分`,
     },
     {
       title: '会员等级',
@@ -204,7 +208,7 @@ const MemberList: React.FC = () => {
         request={async (params) => {
           const { data } = await pageUserInfo(params);
           console.log(data);
-          return { data: data?.list || 0, success: true, total: data?.totle || 0 };
+          return { data: data?.records || 0, success: true, total: data?.totle || 0 };
         }}
         columns={columns}
         // rowSelection={{
@@ -215,7 +219,7 @@ const MemberList: React.FC = () => {
       />
 
       {/* <ModalForm
-        title="创建商品"
+        title="新建管理员"
         width="400px"
         open={createModalOpen}
         onOpenChange={handleModalOpen}
@@ -233,15 +237,25 @@ const MemberList: React.FC = () => {
           rules={[
             {
               required: true,
-              message: '商品名称',
+              message: '手机号',
             },
           ]}
           width="md"
-          name="name"
+          name="phone"
         />
-        <ProFormTextArea width="md" name="desc" />
-      </ModalForm>
-      <UpdateForm
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: '密码',
+            },
+          ]}
+          width="md"
+          name="pwd"
+        />
+        <ProFormTextArea width="md" name="remark" />
+      </ModalForm> */}
+      {/* <UpdateForm
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {

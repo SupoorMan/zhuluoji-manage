@@ -32,18 +32,19 @@ export default [
     path: '/admin',
     name: '管理员',
     icon: 'crown',
+    component: './admin',
     // access: 'canAdmin',
-    routes: [
-      {
-        path: '/admin',
-        redirect: '/admin/sub-page',
-      },
-      {
-        path: '/admin/sub-page',
-        name: 'sub-page',
-        component: './Admin',
-      },
-    ],
+    // routes: [
+    //   {
+    //     path: '/admin',
+    //     redirect: '/admin/sub-page',
+    //   },
+    //   {
+    //     path: '/admin/sub-page',
+    //     name: '列表',
+    //     component: './Admin',
+    //   },
+    // ],
   },
   {
     name: '商品',

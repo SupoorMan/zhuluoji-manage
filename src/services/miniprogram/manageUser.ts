@@ -3,7 +3,7 @@ import { request } from '@umijs/max';
 /** 新增系统后台用户 GET /manageUser/add */
 export async function addUser(body: API.ManageUser, options?: { [key: string]: any }) {
   return request<API.CommonResult>('/manageUser/add', {
-    method: 'GET',
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },

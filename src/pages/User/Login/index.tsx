@@ -52,14 +52,15 @@ const Login: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (values: API.LoginParams) => {
+  const handleSubmit = async (values: Record<string, any>) => {
     try {
       // 登录
-      const result = await login({ ...values });
+      const newValues = { phone: values['login.phone'], pwd: values['login.pwd'] };
+      const result = await login(newValues);
       if (result.code === 200) {
         const defaultLoginSuccessMessage = '登录成功！';
         message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo(values);
+        await fetchUserInfo(newValues);
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
         return;
@@ -92,13 +93,13 @@ const Login: React.FC = () => {
             maxWidth: '75vw',
           }}
           // logo={<img alt="logo" src="/logo.svg" />}
-          title="侏罗纪"
+          title="酷酷的侏罗纪vip"
           subTitle={'小程序数据管理中台'}
           initialValues={{
             autoLogin: true,
           }}
           onFinish={async (values) => {
-            await handleSubmit(values as API.LoginParams);
+            await handleSubmit(values);
           }}
         >
           <Tabs
@@ -117,7 +118,7 @@ const Login: React.FC = () => {
 
           <>
             <ProFormText
-              name="phone"
+              name="login.phone"
               fieldProps={{
                 size: 'large',
                 prefix: <UserOutlined />,
@@ -131,7 +132,7 @@ const Login: React.FC = () => {
               ]}
             />
             <ProFormText.Password
-              name="pwd"
+              name="login.pwd"
               fieldProps={{
                 size: 'large',
                 prefix: <LockOutlined />,

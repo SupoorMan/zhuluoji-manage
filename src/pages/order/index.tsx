@@ -241,7 +241,7 @@ const TableList: React.FC = () => {
         request={async (params) => {
           const { data } = await getOrders(params);
           console.log(data);
-          return { data: data?.list || 0, success: true, total: data?.totle || 0 };
+          return { data: data?.records || 0, success: true, total: data?.totle || 0 };
         }}
         columns={columns}
         // rowSelection={{
