@@ -1,6 +1,9 @@
-/* eslint-disable no-debugger */
-import { getOrders } from '@/services/miniprogram/orders';
-import { PlusOutlined } from '@ant-design/icons';
+import {
+  cancelOrder,
+  getOrders,
+  updateStatus,
+  updateOrderAddr,
+} from '@/services/miniprogram/orders';
 import {
   ActionType,
   ProColumns,
@@ -8,87 +11,66 @@ import {
   TableDropdown,
 } from '@ant-design/pro-components';
 import { PageContainer, ProDescriptions, ProTable } from '@ant-design/pro-components';
-import { Button, Drawer, Input, message } from 'antd';
+import { Drawer, Input, message, Modal } from 'antd';
 import React, { useRef, useState } from 'react';
 
-// /**
-//  * @en-US Add node
-//  * @zh-CN 添加节点
-//  * @param fields
-//  */
-// const handleAdd = async (fields: API.Order) => {
-//   const hide = message.loading('正在添加');
-//   try {
-//     await addProd({ ...fields });
-//     hide();
-//     message.success('Added successfully');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('Adding failed, please try again!');
-//     return false;
-//   }
-// };
+/**@description 发货
+ * @fields 订单信息
+ * @sendCode 运单号
+ */
+const handleUpdate = async (fields: API.Order, sendCode: string) => {
+  const hide = message.loading('更新中');
+  try {
+    await updateStatus({ id: fields.id, status: 2 }, { sendCode });
+    hide();
+    message.success('更新发货进度成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.success('更新发货进度失败，请稍后重试');
+    return false;
+  }
+};
+/**@description 更新发货地址
+ * @fields 新订单信息
+ */
+const handleUpdateAddr = async (fields: API.Order) => {
+  const hide = message.loading('更新中');
+  try {
+    await updateOrderAddr({ ...fields });
+    hide();
+    message.success('更新收货地址成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.success('更新收货地址失败，请稍后重试');
+    return false;
+  }
+};
 
-// /**
-//  * @en-US Update node
-//  * @zh-CN 更新节点
-//  *
-//  * @param fields
-//  */
-// const handleUpdate = async (fields: API.Order) => {
-//   const hide = message.loading('Configuring');
-//   try {
-//     await updateProd(fields);
-//     hide();
+/**
+ * @description 取消订单
+ * @record 订单信息
+ */
+const handleCancel = async (record: API.Order) => {
+  const hide = message.loading('正在取消');
+  try {
+    await cancelOrder(record);
+    hide();
+    message.success('取消成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('取消失败, 请稍后重试');
+    return false;
+  }
+};
 
-//     message.success('Configuration is successful');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('Configuration failed, please try again!');
-//     return false;
-//   }
-// };
-
-// /**
-//  *  Delete node
-//  * @zh-CN 删除节点
-//  *
-//  * @param selectedRows
-//  */
-// const handleRemove = async (selectedRows: API.Order[]) => {
-//   const hide = message.loading('正在删除');
-//   if (!selectedRows) return true;
-//   try {
-//     await deleteProd(selectedRows);
-//     hide();
-//     message.success('删除成功');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('删除失败, 请稍后重试');
-//     return false;
-//   }
-// };
-
-const TableList: React.FC = () => {
-  /**
-   * @zh-CN 新建窗口的弹窗
-   *  */
-  // const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-  /**
-   * @en-US The pop-up window of the distribution update window
-   * @zh-CN 分布更新窗口的弹窗
-   * */
-  // const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-
+const OrderList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
-
-  const actionRef = useRef<ActionType>();
+  const [sendCode, setSendCode] = useState<string>('');
   const [currentRow, setCurrentRow] = useState<API.Order>();
-  // const [selectedRowsState, setSelectedRows] = useState<API.Order[]>([]);
-
+  const actionRef = useRef<ActionType>();
   const columns: ProColumns<API.Order>[] = [
     {
       title: '订单号',
@@ -113,7 +95,7 @@ const TableList: React.FC = () => {
       valueType: 'digit',
       hideInSearch: true,
       sorter: true,
-      renderText: (val: string) => `${val} 积分`,
+      render: (dom) => <>{dom}积分</>,
     },
     {
       title: '数量',
@@ -127,7 +109,6 @@ const TableList: React.FC = () => {
       valueType: 'money',
       hideInSearch: true,
     },
-
     {
       title: '当前进度',
       dataIndex: 'status',
@@ -163,11 +144,11 @@ const TableList: React.FC = () => {
           status: 'Processing',
         },
         1: {
-          text: '用户删除',
+          text: '用户取消',
           status: 'Default',
         },
         2: {
-          text: '系统删除',
+          text: '系统取消',
           status: 'Warning',
         },
       },
@@ -190,29 +171,52 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '收货地址详情',
+      title: '收货地址',
       dataIndex: 'receiveAddress',
+      valueType: 'textarea',
+      fieldProps: {
+        style: {
+          width: 300,
+        },
+      },
       hideInSearch: true,
     },
-
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        <a
-          key="config"
-          onClick={() => {
-            // handleUpdateModalOpen(true);
-            setCurrentRow(record);
-          }}
-        >
-          修改收货地址
-        </a>,
+        record.status === 1 ? (
+          <a
+            key="config"
+            onClick={() => {
+              Modal.confirm({
+                title: '是否确认发货',
+                content: (
+                  <Input
+                    style={{ marginTop: 8, marginBottom: 16 }}
+                    placeholder="请输入运单号"
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      setSendCode(value);
+                    }}
+                  />
+                ),
+                onOk: () => handleUpdate(record, sendCode),
+              });
+            }}
+          >
+            发货
+          </a>
+        ) : (
+          ''
+        ),
         <TableDropdown
           key="actionGroup"
-          onSelect={() => actionRef?.current?.reload()}
-          menus={[{ key: 'delete', name: '删除' }]}
+          menus={[
+            { key: 'delete', name: '取消', onClick: () => handleCancel(record) },
+            { key: 'change', name: '修改收货地址', onClick: () => setShowDetail(true) },
+          ]}
         />,
       ],
     },
@@ -223,84 +227,17 @@ const TableList: React.FC = () => {
       <ProTable<API.Order, API.PageParams>
         headerTitle=""
         actionRef={actionRef}
-        rowKey="key"
-        // search={{
-        //   labelWidth: 120,
-        // }}
-        toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              // handleModalOpen(true);
-            }}
-          >
-            <PlusOutlined /> 新建
-          </Button>,
-        ]}
+        rowKey="id"
         request={async (params) => {
           const { data } = await getOrders(params);
           console.log(data);
           return { data: data?.records || 0, success: true, total: data?.totle || 0 };
         }}
         columns={columns}
-        // rowSelection={{
-        //   onChange: (_, selectedRows) => {
-        //     setSelectedRows(selectedRows);
-        //   },
-        // }}
       />
 
-      {/* <ModalForm
-        title="创建商品"
-        width="400px"
-        open={createModalOpen}
-        onOpenChange={handleModalOpen}
-        onFinish={async (value) => {
-          const success = await handleAdd(value as API.Order);
-          if (success) {
-            handleModalOpen(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-      >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: '商品名称',
-            },
-          ]}
-          width="md"
-          name="name"
-        />
-        <ProFormTextArea width="md" name="desc" />
-      </ModalForm>
-      <UpdateForm
-        onSubmit={async (value) => {
-          const success = await handleUpdate(value);
-          if (success) {
-            handleUpdateModalOpen(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={() => {
-          handleUpdateModalOpen(false);
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
-        }}
-        updateModalOpen={updateModalOpen}
-        values={currentRow || {}}
-      /> */}
-
       <Drawer
-        width={600}
+        width={500}
         open={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
@@ -310,7 +247,12 @@ const TableList: React.FC = () => {
       >
         {currentRow?.id && (
           <ProDescriptions<API.Order>
-            column={2}
+            column={1}
+            editable={{
+              onSave: async (_, newInfo) => {
+                return await handleUpdateAddr(newInfo);
+              },
+            }}
             title={currentRow?.id}
             request={async () => ({
               data: currentRow || {},
@@ -318,7 +260,14 @@ const TableList: React.FC = () => {
             params={{
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<API.Order>[]}
+            columns={
+              columns.map((n) => {
+                if (n.dataIndex !== 'receiveAddress') {
+                  n.editable = false;
+                }
+                return n;
+              }) as ProDescriptionsItemProps<API.Order>[]
+            }
           />
         )}
       </Drawer>
@@ -326,4 +275,4 @@ const TableList: React.FC = () => {
   );
 };
 
-export default TableList;
+export default OrderList;

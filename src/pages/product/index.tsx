@@ -151,20 +151,6 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '商品状态',
-      dataIndex: 'state',
-      valueEnum: {
-        0: {
-          text: '无效',
-          status: 'Default',
-        },
-        1: {
-          text: '有效',
-          status: 'Processing',
-        },
-      },
-    },
-    {
       title: '标签',
       dataIndex: 'tagType',
       valueEnum: {

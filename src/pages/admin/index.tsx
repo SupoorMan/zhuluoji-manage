@@ -38,13 +38,18 @@ const AdminList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ManageUser>();
-
   const columns: ProColumns<API.ManageUser>[] = [
     {
       title: '手机号(账号)',
       dataIndex: 'phone',
       formItemProps: {
-        rules: [{ required: true, message: '手机号为必填项' }],
+        rules: [
+          { required: true, message: '手机号为必填项' },
+          {
+            pattern: /^1\d{10}$/,
+            message: '手机号格式错误！',
+          },
+        ],
       },
       render: (dom, entity) => {
         return (
@@ -109,7 +114,12 @@ const AdminList: React.FC = () => {
         </a>,
         <TableDropdown
           key="actionGroup"
-          onSelect={() => handleRemove(record)}
+          onSelect={async () => {
+            const success = await handleRemove(record);
+            if (success) {
+              actionRef.current?.reload();
+            }
+          }}
           menus={[{ key: 'delete', name: '删除' }]}
         />,
       ],
@@ -121,10 +131,7 @@ const AdminList: React.FC = () => {
       <ProTable<API.ManageUser, API.PageParams>
         headerTitle="列表"
         actionRef={actionRef}
-        rowKey="key"
-        // search={{
-        //   labelWidth: 120,
-        // }}
+        rowKey="id"
         toolBarRender={() => [
           <Button
             type="primary"
@@ -143,9 +150,15 @@ const AdminList: React.FC = () => {
         columns={columns}
       />
       <EditModal<API.ManageUser>
-        title={'新建管理员'}
+        title={`${currentRow ? `编辑` : `新建`} 管理员`}
         width={400}
         open={createModalOpen}
+        onFinish={(success: boolean) => {
+          if (success) {
+            actionRef.current?.reload();
+            handleModalOpen(false);
+          }
+        }}
         onOpenChange={(open) => {
           handleModalOpen(open);
           if (!open) {

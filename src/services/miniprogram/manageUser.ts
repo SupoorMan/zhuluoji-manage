@@ -42,7 +42,7 @@ export async function pageUsers(
 /** 更新系统后台用户 GET /manageUser/update */
 export async function updateUser(body: API.ManageUser, options?: { [key: string]: any }) {
   return request<API.CommonResult>('/manageUser/update', {
-    method: 'GET',
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
