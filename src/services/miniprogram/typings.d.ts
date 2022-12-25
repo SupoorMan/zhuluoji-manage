@@ -78,19 +78,19 @@ declare namespace API {
     /** 商品名称 */
     productName?: string;
     /** 商品类型: 0.玻璃餐具 1.睡衣浴袍 2.床上用品 3.家具装点 */
-    productinterface?: number;
+    productType?: number | string;
     /** 限购数量 */
     purchaseLimit?: number;
     /** 推荐: 0.不是 1.是 */
     recommend?: number;
     /** 0.下架 1.上架 */
-    shopping?: number;
+    shopping?: number | string;
     /** 红星数 */
     starter?: number;
     /** 状态: 0.正常 1.删除 */
     state?: number;
     /** 标签类型: 0.新品 1.人气 */
-    taginterface?: number;
+    tagType?: number | string;
     updateTime?: string;
     createTime?: string;
   };
@@ -223,6 +223,20 @@ declare namespace API {
     /** 响应消息 */
     msg?: string;
   }
+  interface fileUploadResult {
+    /** 响应码: 200.成功 500.错误 1000以上.失败 */
+    code?: number;
+    /** 返回数据 */
+    data?: string;
+    /** 响应消息 */
+    msg?: string;
+  }
+  type UpDownProductsParams = {
+    /** id集合 */
+    ids?: number[];
+    /** 0.下架 1.上架 */
+    shopping?: number;
+  };
 
   interface AppletNotify {
     /** 小程序用户id */

@@ -1,8 +1,7 @@
 import React, { useRef } from 'react';
 import { ProFormColumnsType, ProFormInstance } from '@ant-design/pro-components';
 import SchemaForm from '@/components/SchemaForm';
-import { addUser } from '@/services/miniprogram/manageUser';
-import { updateUser } from '@/services/miniprogram/manageUser';
+import { addUser, updateUser } from '@/services/miniprogram/manageUser';
 import { message } from 'antd';
 
 interface Iprops<T> {

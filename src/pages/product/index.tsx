@@ -1,82 +1,56 @@
-/* eslint-disable no-debugger */
-import { addProd, deleteProd, getProds, updateProd } from '@/services/miniprogram/product';
+import { deleteProd, getProds, upDownProducts } from '@/services/miniprogram/product';
 import { PlusOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
   ProDescriptionsItemProps,
+  ProFormColumnsType,
   TableDropdown,
 } from '@ant-design/pro-components';
 import { PageContainer, ProDescriptions, ProTable } from '@ant-design/pro-components';
-import { Button, Drawer, Input, message } from 'antd';
+import { Button, Drawer, message, Space, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
+import EditModal from './components/EditModal';
 
-// /**
-//  * @en-US Add node
-//  * @zh-CN 添加节点
-//  * @param fields
-//  */
-// const handleAdd = async (fields: API.IntegralProduct) => {
-//   const hide = message.loading('正在添加');
-//   try {
-//     await addProd({ ...fields });
-//     hide();
-//     message.success('Added successfully');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('Adding failed, please try again!');
-//     return false;
-//   }
-// };
+/**
+ * @description 批量上下架商品
+ * @ids 商品id数组
+ * @upOrDown 上下架对应状态
+ */
+const handleUpdate = async (ids: number[], upOrDown: number) => {
+  const hide = message.loading('更新中');
+  try {
+    await upDownProducts({ ids, shopping: upOrDown });
+    hide();
+    message.success('更新成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('更新失败, 请稍后重试!');
+    return false;
+  }
+};
 
-// /**
-//  * @en-US Update node
-//  * @zh-CN 更新节点
-//  *
-//  * @param fields
-//  */
-// const handleUpdate = async (fields: API.IntegralProduct) => {
-//   const hide = message.loading('Configuring');
-//   try {
-//     await updateProd(fields);
-//     hide();
-
-//     message.success('Configuration is successful');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('Configuration failed, please try again!');
-//     return false;
-//   }
-// };
-
-// /**
-//  *  Delete node
-//  * @zh-CN 删除节点
-//  *
-//  * @param selectedRows
-//  */
-// const handleRemove = async (selectedRows: API.IntegralProduct[]) => {
-//   const hide = message.loading('正在删除');
-//   if (!selectedRows) return true;
-//   try {
-//     await deleteProd(selectedRows);
-//     hide();
-//     message.success('删除成功');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('删除失败, 请稍后重试');
-//     return false;
-//   }
-// };
+/**
+ * @zh-CN 删除商品
+ * @param selectedRows
+ */
+const handleRemove = async (field: API.IntegralProduct) => {
+  const hide = message.loading('正在删除');
+  try {
+    await deleteProd(field);
+    hide();
+    message.success('删除成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('删除失败, 请稍后重试');
+    return false;
+  }
+};
 
 const TableList: React.FC = () => {
-  /**
-   * @zh-CN 新建窗口的弹窗
-   *  */
-  // const [createModalOpen, handleModalOpen] = useState<boolean>(false);
+  const [createModalOpen, handleModalOpen] = useState<boolean>(false); //新建窗口的弹窗
   /**
    * @en-US The pop-up window of the distribution update window
    * @zh-CN 分布更新窗口的弹窗
@@ -87,7 +61,7 @@ const TableList: React.FC = () => {
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.IntegralProduct>();
-  // const [selectedRowsState, setSelectedRows] = useState<API.IntegralProduct[]>([]);
+  const [selectedRows, setSelectedRows] = useState<API.IntegralProduct[]>([]);
 
   const columns: ProColumns<API.IntegralProduct>[] = [
     {
@@ -106,35 +80,47 @@ const TableList: React.FC = () => {
           </a>
         );
       },
+      formItemProps: {
+        rules: [{ required: true, message: '商品名称为必填项' }],
+      },
     },
     {
       title: '商品类型',
       dataIndex: 'productType',
       valueType: 'select',
+      valueEnum: {
+        // 0.玻璃餐具 1.睡衣浴袍 2.床上用品 3.家具装点
+        0: '玻璃餐具',
+        1: '睡衣浴袍',
+        2: '床上用品',
+        3: '家具装点',
+      },
+      formItemProps: {
+        rules: [{ required: true, message: '商品类型为必填项' }],
+      },
     },
     {
       title: '价值',
       dataIndex: 'integral',
-      valueType: 'digit',
+      valueType: 'money',
       hideInSearch: true,
-      sorter: true,
-      render: (_, record) => record.integral + ` 积分`,
-    },
-
-    {
-      title: '是否推荐',
-      dataIndex: 'recommend',
-      sorter: true,
-      valueEnum: {
-        0: {
-          text: '是',
-          status: 'Default',
-        },
-        1: {
-          text: '否',
-          status: 'Processing',
-        },
+      fieldProps: {
+        moneySymbol: false,
+        style: { width: '240px' },
+        addonAfter: '积分',
+        precision: 0,
       },
+      render: (_) => <>{_}积分</>,
+      formItemProps: {
+        rules: [{ required: true, message: '商品积分为必填项' }],
+      },
+    },
+    {
+      title: '星级',
+      dataIndex: 'starter',
+      valueType: 'rate',
+      hideInTable: true,
+      hideInSearch: true,
     },
     {
       title: '上架状态',
@@ -149,6 +135,9 @@ const TableList: React.FC = () => {
           status: 'Processing',
         },
       },
+      formItemProps: {
+        rules: [{ required: true, message: '请选择上下架状态' }],
+      },
     },
     {
       title: '标签',
@@ -156,34 +145,52 @@ const TableList: React.FC = () => {
       valueEnum: {
         0: {
           text: '新品',
-          status: 'Default',
+          status: 'Success',
         },
         1: {
           text: '人气',
-          status: 'Processing',
+          status: 'Error',
+        },
+        2: {
+          text: '无',
+          status: 'Default',
         },
       },
     },
     {
+      title: '是否推荐',
+      dataIndex: 'recommend',
+      valueType: 'switch',
+      initialValue: 0,
+      render: (_, record) => {
+        return record.recommend === 1 ? <Tag color="green">推荐</Tag> : <Tag>不推荐</Tag>;
+      },
+    },
+    {
       title: '更新时间',
-      sorter: true,
+      hideInForm: true,
       dataIndex: 'updateTime',
       valueType: 'dateTime',
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder={'Please enter the reason for the exception!'} />;
-        }
-        return defaultRender(item);
-      },
     },
     {
       title: '简介',
       dataIndex: 'introduction',
       hideInSearch: true,
+      hideInTable: true,
+      valueType: 'textarea',
+    },
+    {
+      title: '商品图片',
+      valueType: 'image',
+      dataIndex: 'productImage',
+      hideInSearch: true,
+      hideInTable: true,
+      fieldProps: {
+        width: 120,
+      },
+      formItemProps: {
+        rules: [{ required: true, message: '至少有一张商品图片' }],
+      },
     },
     {
       title: '操作',
@@ -193,7 +200,8 @@ const TableList: React.FC = () => {
         <a
           key="config"
           onClick={() => {
-            // handleUpdateModalOpen(true);
+            handleModalOpen(true);
+            setShowDetail(false);
             setCurrentRow(record);
           }}
         >
@@ -202,10 +210,25 @@ const TableList: React.FC = () => {
         <a key="subscribeAlert">配置图文详情</a>,
         <TableDropdown
           key="actionGroup"
-          onSelect={() => actionRef?.current?.reload()}
           menus={[
-            { key: 'copy', name: '上架' },
-            { key: 'delete', name: '删除' },
+            {
+              key: 'change',
+              name: record.shopping === 1 ? '下架' : '上架',
+              onClick: async () => {
+                await handleUpdate([record.id!], record.shopping === 1 ? 0 : 1);
+                actionRef?.current?.reload();
+              },
+            },
+            {
+              key: 'delete',
+              name: '删除',
+              onClick: async () => {
+                const success = await handleRemove(record);
+                if (success) {
+                  actionRef.current?.reload();
+                }
+              },
+            },
           ]}
         />,
       ],
@@ -217,84 +240,78 @@ const TableList: React.FC = () => {
       <ProTable<API.IntegralProduct, API.PageParams>
         headerTitle="积分商品管理"
         actionRef={actionRef}
-        rowKey="key"
-        // search={{
-        //   labelWidth: 120,
-        // }}
+        rowKey="id"
         toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              // handleModalOpen(true);
-            }}
-          >
+          <Button type="primary" key="primary" onClick={() => handleModalOpen(true)}>
             <PlusOutlined /> 新建
           </Button>,
         ]}
         request={async (params) => {
           const { data } = await getProds(params);
-          console.log(data);
-          return { data: data?.records || 0, success: true, total: data?.totle || 0 };
+          return { data: data?.records || 0, success: true, total: data?.total || 0 };
         }}
         columns={columns}
-        // rowSelection={{
-        //   onChange: (_, selectedRows) => {
-        //     setSelectedRows(selectedRows);
-        //   },
-        // }}
+        rowSelection={{
+          onChange: (_, selectedRows) => {
+            setSelectedRows(selectedRows);
+          },
+        }}
+        tableAlertOptionRender={({ onCleanSelected }) => {
+          return (
+            <Space size={16}>
+              <a
+                onClick={() => {
+                  handleUpdate(
+                    selectedRows.map((n) => n.id!),
+                    1,
+                  );
+                  actionRef?.current?.reload();
+                  onCleanSelected();
+                }}
+              >
+                批量上架
+              </a>
+              <a
+                onClick={async () => {
+                  await handleUpdate(
+                    selectedRows.map((n) => n.id!),
+                    0,
+                  );
+                  actionRef?.current?.reload();
+                  onCleanSelected();
+                }}
+              >
+                批量下架
+              </a>
+            </Space>
+          );
+        }}
       />
 
-      {/* <ModalForm
-        title="创建商品"
-        width="400px"
+      <EditModal<API.IntegralProduct>
+        title={`${currentRow ? `编辑` : `新建`} 商品`}
+        width={700}
         open={createModalOpen}
-        onOpenChange={handleModalOpen}
-        onFinish={async (value) => {
-          const success = await handleAdd(value as API.IntegralProduct);
+        modalProps={{
+          onCancel: () => handleModalOpen(false),
+        }}
+        onFinish={(success: boolean) => {
           if (success) {
+            actionRef.current?.reload();
             handleModalOpen(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
           }
         }}
-      >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: '商品名称',
-            },
-          ]}
-          width="md"
-          name="name"
-        />
-        <ProFormTextArea width="md" name="desc" />
-      </ModalForm>
-      <UpdateForm
-        onSubmit={async (value) => {
-          const success = await handleUpdate(value);
-          if (success) {
-            handleUpdateModalOpen(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={() => {
-          handleUpdateModalOpen(false);
-          if (!showDetail) {
+        onOpenChange={(open) => {
+          if (!open && currentRow) {
             setCurrentRow(undefined);
           }
         }}
-        updateModalOpen={updateModalOpen}
-        values={currentRow || {}}
-      /> */}
+        current={currentRow}
+        columns={columns as ProFormColumnsType<API.IntegralProduct>[]}
+      />
 
       <Drawer
-        width={600}
+        width={400}
         open={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
@@ -304,7 +321,7 @@ const TableList: React.FC = () => {
       >
         {currentRow?.productName && (
           <ProDescriptions<API.IntegralProduct>
-            column={2}
+            column={1}
             title={currentRow?.productName}
             request={async () => ({
               data: currentRow || {},

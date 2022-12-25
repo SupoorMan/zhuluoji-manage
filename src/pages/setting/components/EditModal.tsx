@@ -1,9 +1,8 @@
 import React, { useRef } from 'react';
 import { ProFormColumnsType, ProFormInstance } from '@ant-design/pro-components';
 import SchemaForm from '@/components/SchemaForm';
-import { addUser } from '@/services/miniprogram/manageUser';
-import { updateUser } from '@/services/miniprogram/users';
 import { message } from 'antd';
+import { addConfigInfo, updateConfigInfo } from '@/services/miniprogram/setting';
 
 interface Iprops<T> {
   title: string;
@@ -16,8 +15,8 @@ interface Iprops<T> {
 /**
  * @param fields 用户信息
  */
-const handleUserData = async (
-  fields: API.ManageUser,
+const handleSubmit = async (
+  fields: API.ConfigInfo,
   backFn: (arg: any) => Promise<API.CommonResult>,
 ) => {
   const hide = message.loading('正在' + (fields?.id ? '添加' : '更新'));
@@ -46,7 +45,6 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
     <SchemaForm<T>
       formRef={formRef}
       title={title}
-      width={'70%'}
       modalProps={{
         onCancel: () => onOpenChange(false),
       }}
@@ -65,9 +63,9 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
       layoutType="ModalForm"
       onFinish={async (values) => {
         if (current) {
-          onFinish(await handleUserData({ ...current, ...values }, updateUser));
+          onFinish(await handleSubmit({ ...current, ...values }, updateConfigInfo));
         } else {
-          onFinish(await handleUserData({ ...values, state: 1 }, addUser));
+          onFinish(await handleSubmit({ ...values, state: 1 }, addConfigInfo));
         }
       }}
       columns={columns}

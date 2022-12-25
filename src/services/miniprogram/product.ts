@@ -67,3 +67,17 @@ export async function updateProd(body: API.IntegralProduct, options?: { [key: st
     ...(options || {}),
   });
 }
+/** 批量更新积分商品[上下架] POST /product/updateProducts */
+export async function upDownProducts(
+  body: API.UpDownProductsParams,
+  options?: { [key: string]: any },
+) {
+  return request<API.CommonResult>('/product/updateProducts', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}

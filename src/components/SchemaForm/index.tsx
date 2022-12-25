@@ -1,8 +1,6 @@
 import React from 'react';
-// import cls from './index.module.less';
 import type { ProFormColumnsType, ProFormLayoutType } from '@ant-design/pro-components';
 import { BetaSchemaForm } from '@ant-design/pro-components';
-import { DataType } from 'typings/globelType';
 
 interface indexType<T> {
   layoutType: ProFormLayoutType; //props
@@ -11,7 +9,7 @@ interface indexType<T> {
   onFinish: (values: T) => void;
   [key: string]: any;
 }
-const Index = <T extends DataType>({
+const Index = <T extends { [key: string]: any }>({
   layoutType,
   open,
   columns,
@@ -22,19 +20,13 @@ const Index = <T extends DataType>({
     layoutType,
     open,
     colProps: { span: 12 },
+    rowProps: { gutter: [16, 0] },
     grid: layoutType !== 'LightFilter' && layoutType !== 'QueryFilter',
-    onFinish: async (values: T) => {
-      console.log('jsonfromonFinish', values);
-      onFinish(values);
-    },
+    onFinish: async (values: T) => onFinish(values),
     columns: (layoutType === 'StepsForm' ? [columns] : columns) as any,
     ...otherConfig,
   };
-  return (
-    <>
-      <BetaSchemaForm<T> {...config} />
-    </>
-  );
+  return <BetaSchemaForm<T> {...config} />;
 };
 
 export default Index;
