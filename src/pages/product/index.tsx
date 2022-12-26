@@ -1,4 +1,4 @@
-import { deleteProd, getProds, upDownProducts } from '@/services/miniprogram/product';
+import { deleteProd, getProds, upDownProducts, updateProd } from '@/services/miniprogram/product';
 import { PlusOutlined } from '@ant-design/icons';
 import {
   ActionType,
@@ -8,8 +8,9 @@ import {
   TableDropdown,
 } from '@ant-design/pro-components';
 import { PageContainer, ProDescriptions, ProTable } from '@ant-design/pro-components';
-import { Button, Drawer, message, Space, Tag } from 'antd';
+import { Button, Card, Drawer, message, Space, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
+import RichEditor from './components/BraftEdit';
 import EditModal from './components/EditModal';
 
 /**
@@ -21,6 +22,24 @@ const handleUpdate = async (ids: number[], upOrDown: number) => {
   const hide = message.loading('更新中');
   try {
     await upDownProducts({ ids, shopping: upOrDown });
+    hide();
+    message.success('更新成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('更新失败, 请稍后重试!');
+    return false;
+  }
+};
+/**
+ * @description 更新商品信息
+ * @field 商品信息
+ * @details 商品图文详情
+ */
+const handleUpdateDetail = async (field: API.IntegralProduct, details: string) => {
+  const hide = message.loading('更新中');
+  try {
+    await updateProd({ ...field, details });
     hide();
     message.success('更新成功');
     return true;
@@ -51,13 +70,8 @@ const handleRemove = async (field: API.IntegralProduct) => {
 
 const TableList: React.FC = () => {
   const [createModalOpen, handleModalOpen] = useState<boolean>(false); //新建窗口的弹窗
-  /**
-   * @en-US The pop-up window of the distribution update window
-   * @zh-CN 分布更新窗口的弹窗
-   * */
-  // const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [newDetail, setNewDetail] = useState<string>('');
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.IntegralProduct>();
@@ -186,7 +200,7 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       hideInTable: true,
       fieldProps: {
-        width: 120,
+        width: 100,
       },
       formItemProps: {
         rules: [{ required: true, message: '至少有一张商品图片' }],
@@ -207,7 +221,15 @@ const TableList: React.FC = () => {
         >
           编辑
         </a>,
-        <a key="subscribeAlert">配置图文详情</a>,
+        <a
+          key="subscribeAlert"
+          onClick={() => {
+            setCurrentRow(record);
+            setShowDetail(true);
+          }}
+        >
+          配置图文详情
+        </a>,
         <TableDropdown
           key="actionGroup"
           menus={[
@@ -287,7 +309,6 @@ const TableList: React.FC = () => {
           );
         }}
       />
-
       <EditModal<API.IntegralProduct>
         title={`${currentRow ? `编辑` : `新建`} 商品`}
         width={700}
@@ -309,9 +330,8 @@ const TableList: React.FC = () => {
         current={currentRow}
         columns={columns as ProFormColumnsType<API.IntegralProduct>[]}
       />
-
       <Drawer
-        width={400}
+        width={'60%'}
         open={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
@@ -319,18 +339,41 @@ const TableList: React.FC = () => {
         }}
         closable={false}
       >
+        <div>商品信息</div>
         {currentRow?.productName && (
           <ProDescriptions<API.IntegralProduct>
-            column={1}
-            title={currentRow?.productName}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.productName,
-            }}
-            columns={columns as ProDescriptionsItemProps<API.IntegralProduct>[]}
+            column={3}
+            dataSource={currentRow}
+            columns={
+              [...columns].splice(
+                0,
+                columns.length - 1,
+              ) as ProDescriptionsItemProps<API.IntegralProduct>[]
+            }
           />
+        )}
+        {currentRow && (
+          <>
+            <Card
+              type="inner"
+              title="图文详情"
+              extra={
+                <a
+                  onClick={async () => {
+                    const success = await handleUpdateDetail(currentRow, newDetail);
+                    if (success) {
+                      actionRef.current?.reload();
+                    }
+                  }}
+                >
+                  保存
+                </a>
+              }
+              bodyStyle={{ padding: 0 }}
+            >
+              <RichEditor detail={currentRow?.details || ''} onChange={setNewDetail} />
+            </Card>
+          </>
         )}
       </Drawer>
     </PageContainer>

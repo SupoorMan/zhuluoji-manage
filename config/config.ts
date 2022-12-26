@@ -124,7 +124,6 @@ export default defineConfig({
     },
   ],
   // mfsu: {
-  //   esbuild: false,
   //   strategy: 'normal',
   // },
   requestRecord: {},
