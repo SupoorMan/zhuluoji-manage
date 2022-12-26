@@ -258,7 +258,7 @@ const TableList: React.FC = () => {
   ];
 
   return (
-    <PageContainer header={{ title: '' }}>
+    <PageContainer>
       <ProTable<API.IntegralProduct, API.PageParams>
         headerTitle="积分商品管理"
         actionRef={actionRef}
@@ -339,41 +339,40 @@ const TableList: React.FC = () => {
         }}
         closable={false}
       >
-        <div>商品信息</div>
         {currentRow?.productName && (
-          <ProDescriptions<API.IntegralProduct>
-            column={3}
-            dataSource={currentRow}
-            columns={
-              [...columns].splice(
-                0,
-                columns.length - 1,
-              ) as ProDescriptionsItemProps<API.IntegralProduct>[]
-            }
-          />
+          <Card type="inner" title="商品信息">
+            <ProDescriptions<API.IntegralProduct>
+              column={3}
+              dataSource={currentRow}
+              columns={
+                [...columns].splice(
+                  0,
+                  columns.length - 1,
+                ) as ProDescriptionsItemProps<API.IntegralProduct>[]
+              }
+            />
+          </Card>
         )}
         {currentRow && (
-          <>
-            <Card
-              type="inner"
-              title="图文详情"
-              extra={
-                <a
-                  onClick={async () => {
-                    const success = await handleUpdateDetail(currentRow, newDetail);
-                    if (success) {
-                      actionRef.current?.reload();
-                    }
-                  }}
-                >
-                  保存
-                </a>
-              }
-              bodyStyle={{ padding: 0 }}
-            >
-              <RichEditor detail={currentRow?.details || ''} onChange={setNewDetail} />
-            </Card>
-          </>
+          <Card
+            type="inner"
+            title="图文详情"
+            extra={
+              <a
+                onClick={async () => {
+                  const success = await handleUpdateDetail(currentRow, newDetail);
+                  if (success) {
+                    actionRef.current?.reload();
+                  }
+                }}
+              >
+                保存
+              </a>
+            }
+            bodyStyle={{ padding: 0 }}
+          >
+            <RichEditor detail={currentRow?.details || ''} onChange={setNewDetail} />
+          </Card>
         )}
       </Drawer>
     </PageContainer>
