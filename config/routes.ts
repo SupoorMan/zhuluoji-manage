@@ -60,6 +60,12 @@ export default [
     component: './order',
   },
   {
+    name: '售后',
+    icon: 'ShoppingCart',
+    path: '/salesAfter',
+    component: './afterSales',
+  },
+  {
     name: '会员',
     icon: 'team',
     path: '/user/manage',

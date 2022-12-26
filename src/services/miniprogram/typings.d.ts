@@ -175,7 +175,7 @@ declare namespace API {
     status?: number;
   }
 
-  interface AfterSales {
+  type AfterSales = {
     /** 小程序用户id */
     appletUserId?: number;
     createTime?: string;
@@ -189,7 +189,7 @@ declare namespace API {
     /** 售后状态: 0.售后申请 1.处理中 2.完成 */
     status?: number;
     updateTime?: string;
-  }
+  };
 
   interface AppletDeliveryAddress {
     /** 详细地址 */
