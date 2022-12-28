@@ -12,7 +12,7 @@
 export default {
   dev: {
     '/api/': {
-      target: 'http://www.uian.net:8888/',
+      target: 'https://ny21368148.goho.co',
       changeOrigin: true,
       pathRewrite: { '/api': '' },
     },
