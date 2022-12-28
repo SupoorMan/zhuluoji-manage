@@ -113,9 +113,7 @@ const Login: React.FC = () => {
               },
             ]}
           />
-
-          {status === 'error' && <LoginMessage content={'账户或密码错误(admin/ant.design)'} />}
-
+          {status === 'error' && <LoginMessage content={'账户或密码错误'} />}
           <>
             <ProFormText
               name="login.phone"

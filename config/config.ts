@@ -117,11 +117,11 @@ export default defineConfig({
    * @doc https://pro.ant.design/zh-cn/docs/openapi/
    */
   openAPI: [
-    {
-      requestLibPath: "import { request } from '@umijs/max'",
-      schemaPath: 'http://47.111.234.21:8888/v3/api-docs',
-      projectName: 'newminiprogram',
-    },
+    // {
+    //   requestLibPath: "import { request } from '@umijs/max'",
+    //   schemaPath: 'http://47.111.234.21:8888/v3/api-docs',
+    //   projectName: 'newminiprogram',
+    // },
   ],
   // mfsu: {
   //   strategy: 'normal',

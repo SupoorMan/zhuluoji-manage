@@ -88,9 +88,15 @@ export const errorConfig: RequestConfig = {
   // 请求拦截器
   requestInterceptors: [
     (config: RequestOptions) => {
+      const token = localStorage.getItem('token');
+      const { headers } = config;
       // 拦截请求配置，进行个性化处理。
-      const url = '/api' + config?.url;
-      return { ...config, url, withCredentials: true };
+      const url = 'https://ny21368148.goho.co' + config?.url;
+      return {
+        ...config,
+        url,
+        headers: { ...headers, token_sys: token || '', manage: token || '' },
+      };
     },
   ],
 
@@ -98,10 +104,14 @@ export const errorConfig: RequestConfig = {
   responseInterceptors: [
     (response) => {
       // 拦截响应数据，进行个性化处理
-      const { data } = response as unknown as ResponseStructure;
-
-      if (data?.success === false) {
-        message.error('请求失败！');
+      const { data, headers } = response; // as unknown as ResponseStructure;
+      console.log(headers.token_sys);
+      const token = localStorage.getItem('token');
+      if (headers.token_sys && headers.token_sys !== token) {
+        localStorage.setItem('token', headers.token_sys);
+      }
+      if (data?.code !== 200) {
+        message.error(data?.msg);
       }
       return response;
     },

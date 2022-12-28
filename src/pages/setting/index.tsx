@@ -151,8 +151,9 @@ const ConfigList: React.FC = () => {
         ]}
         request={async () => {
           const { data } = await listConfigInfo();
-          return { data: data?.records || 0, success: true, total: data?.totle || 0 };
+          return { data: (data as []) || [], success: true, total: data?.totle || 0 };
         }}
+        pagination={false}
         columns={columns}
       />
       <EditModal<API.ConfigInfo>

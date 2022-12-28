@@ -11,10 +11,10 @@
  */
 export default {
   dev: {
-    '/api/': {
+    '/api': {
       target: 'https://ny21368148.goho.co',
       changeOrigin: true,
-      pathRewrite: { '/api': '' },
+      pathRewrite: { '^/api': '' },
     },
   },
   /**
