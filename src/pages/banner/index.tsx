@@ -41,6 +41,7 @@ const ConfigList: React.FC = () => {
       title: '图片',
       dataIndex: 'url',
       valueType: 'image',
+      hideInSearch: true,
       formItemProps: {
         rules: [{ required: true, message: '轮播图片为必填项' }],
       },
@@ -49,11 +50,13 @@ const ConfigList: React.FC = () => {
     {
       title: '链接',
       dataIndex: 'links',
+      hideInSearch: true,
     },
     {
       title: '排序',
       dataIndex: 'sorts',
       valueType: 'digit',
+      hideInSearch: true,
       fieldProps: {
         style: {
           width: '200px',

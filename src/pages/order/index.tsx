@@ -158,6 +158,7 @@ const OrderList: React.FC = () => {
       sorter: true,
       dataIndex: 'createTime',
       valueType: 'dateTime',
+      hideInSearch: true,
     },
     {
       title: '更新时间',

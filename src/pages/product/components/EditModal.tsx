@@ -118,14 +118,24 @@ const CreateTeamModal = <T extends API.IntegralProduct>(props: Iprops<T>) => {
         if (current) {
           onFinish(
             await handleSubmit(
-              { ...current, ...values, productImage: productImage.join(',') },
+              {
+                ...current,
+                ...values,
+                productImage: productImage.join(','),
+                recommend: values.recommend ? 1 : 0,
+              },
               updateProd,
             ),
           );
         } else {
           onFinish(
             await handleSubmit(
-              { ...values, state: 1, productImage: productImage.join(',') },
+              {
+                ...values,
+                state: 0,
+                productImage: productImage.join(','),
+                recommend: values.recommend ? 1 : 0,
+              },
               addProd,
             ),
           );
@@ -182,19 +192,6 @@ const CreateTeamModal = <T extends API.IntegralProduct>(props: Iprops<T>) => {
               colProps: {
                 xs: 24,
                 md: 6,
-              },
-            };
-          } else if (
-            n.dataIndex === 'tagType' ||
-            n.dataIndex === 'shopping' ||
-            n.dataIndex === 'starter'
-          ) {
-            return {
-              ...n,
-              width: 'md',
-              colProps: {
-                xs: 24,
-                md: 8,
               },
             };
           }

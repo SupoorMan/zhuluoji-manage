@@ -62,7 +62,6 @@ const MemberList: React.FC = () => {
       title: '会员等级',
       dataIndex: 'level',
       valueType: 'digit',
-      hideInSearch: true,
     },
     {
       title: '手机号',
@@ -71,6 +70,7 @@ const MemberList: React.FC = () => {
     {
       title: '性别',
       dataIndex: 'gender',
+      hideInSearch: true,
       valueEnum: {
         0: {
           text: '女',
@@ -85,6 +85,7 @@ const MemberList: React.FC = () => {
     {
       title: '状态',
       dataIndex: 'state',
+      hideInSearch: true,
       valueEnum: {
         0: {
           text: '禁用',

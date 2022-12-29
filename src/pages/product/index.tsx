@@ -158,13 +158,29 @@ const TableList: React.FC = () => {
     {
       title: '是否推荐',
       dataIndex: 'recommend',
+      hideInTable: true,
+      hideInForm: true,
+      valueEnum: {
+        0: {
+          text: '不推荐',
+          status: 'Default',
+        },
+        1: {
+          text: '推荐',
+          status: 'Processing',
+        },
+      },
+    },
+    {
+      title: '是否推荐',
+      dataIndex: 'recommend',
       valueType: 'switch',
+      hideInSearch: true,
       initialValue: 0,
       render: (_, record) => {
         return record.recommend === 1 ? <Tag color="green">推荐</Tag> : <Tag>不推荐</Tag>;
       },
     },
-
     {
       title: '上架状态',
       dataIndex: 'shopping',
@@ -204,6 +220,7 @@ const TableList: React.FC = () => {
       title: '星级',
       dataIndex: 'starter',
       valueType: 'rate',
+      hideInForm: true,
       hideInTable: true,
       hideInSearch: true,
     },
@@ -286,7 +303,7 @@ const TableList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<API.IntegralProduct, API.PageParams>
+      <ProTable<API.IntegralProduct>
         headerTitle="积分商品管理"
         actionRef={actionRef}
         rowKey="id"
@@ -296,7 +313,7 @@ const TableList: React.FC = () => {
           </Button>,
         ]}
         request={async (params) => {
-          const { data } = await getProds(params);
+          const { data } = await getProds({ ...params });
           return { data: data?.records || 0, success: true, total: data?.total || 0 };
         }}
         columns={columns}
