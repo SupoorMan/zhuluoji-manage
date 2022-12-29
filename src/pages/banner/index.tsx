@@ -128,7 +128,7 @@ const ConfigList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<API.ConfigInfo>
+      <ProTable<API.Banner>
         headerTitle="列表"
         actionRef={actionRef}
         rowKey="id"
@@ -167,7 +167,7 @@ const ConfigList: React.FC = () => {
           }
         }}
         current={currentRow}
-        columns={columns as ProFormColumnsType<API.ConfigInfo>[]}
+        columns={columns as ProFormColumnsType<API.Banner>[]}
       />
       <Drawer
         width={400}
@@ -179,11 +179,11 @@ const ConfigList: React.FC = () => {
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<API.ConfigInfo>
+          <ProDescriptions<API.Banner>
             column={1}
             title="轮播详情"
             dataSource={currentRow}
-            columns={columns as ProDescriptionsItemProps<API.ConfigInfo>[]}
+            columns={columns as ProDescriptionsItemProps<API.Banner>[]}
           />
         )}
       </Drawer>
