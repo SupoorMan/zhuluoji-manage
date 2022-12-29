@@ -83,6 +83,8 @@ declare namespace API {
     purchaseLimit?: number;
     /** 规格 */
     amount?: string;
+    /** 数量 */
+    totals?: string;
     /** 推荐: 0.不是 1.是 */
     recommend?: number;
     /** 0.下架 1.上架 */
