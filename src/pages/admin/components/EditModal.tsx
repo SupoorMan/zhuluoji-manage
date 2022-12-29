@@ -19,7 +19,7 @@ const handleUserData = async (
   fields: API.ManageUser,
   backFn: (arg: any) => Promise<API.CommonResult>,
 ) => {
-  const hide = message.loading('正在' + (fields?.id ? '添加' : '更新'));
+  const hide = message.loading('正在' + (fields?.id ? '更新' : '添加'));
   try {
     const { code } = await backFn({ ...fields });
     hide();
@@ -31,7 +31,7 @@ const handleUserData = async (
     }
   } catch (error) {
     hide();
-    message.error((fields?.id ? '添加' : '更新') + '失败, 请稍后重试!');
+    message.error((fields?.id ? '更新' : '添加') + '失败, 请稍后重试!');
     return false;
   }
 };

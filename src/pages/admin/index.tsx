@@ -114,13 +114,21 @@ const AdminList: React.FC = () => {
         </a>,
         <TableDropdown
           key="actionGroup"
-          onSelect={async () => {
-            const success = await handleRemove(record);
-            if (success) {
-              actionRef.current?.reload();
-            }
-          }}
-          menus={[{ key: 'delete', name: '删除' }]}
+          menus={[
+            {
+              key: 'delete',
+              name: record.state === 1 ? '禁用' : '开启',
+              onClick: async () => {
+                const success = await handleRemove({
+                  ...record,
+                  state: record.state === 1 ? 0 : 1,
+                });
+                if (success) {
+                  actionRef.current?.reload();
+                }
+              },
+            },
+          ]}
         />,
       ],
     },

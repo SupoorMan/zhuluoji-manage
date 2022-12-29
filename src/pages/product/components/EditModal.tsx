@@ -6,7 +6,7 @@ import {
   ProFormUploadButton,
 } from '@ant-design/pro-components';
 import SchemaForm from '@/components/SchemaForm';
-import { message, UploadFile, UploadProps } from 'antd';
+import { message, UploadFile, Image } from 'antd';
 import { addProd, updateProd } from '@/services/miniprogram/product';
 import { uploadFile, deleteFile } from '@/services/miniprogram/file';
 import { UploadRequestOption } from 'rc-upload/lib/interface';
@@ -59,16 +59,11 @@ const handleRemove = async (filePath: string) => {
 const CreateTeamModal = <T extends API.IntegralProduct>(props: Iprops<T>) => {
   const { title, current, onOpenChange, columns, onFinish, ...otherConfig } = props;
   const formRef = useRef<ProFormInstance>();
+  const [visible, setVisible] = useState<boolean>(false);
+  const [priviewSrc, setPriviewSrc] = useState<string>('');
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
-    setFileList(newFileList);
-
   useEffect(() => {
-    const list = current?.productImage
-      ? current?.productImage.split(',')
-      : [
-          'https://shuzhucloud-zhuluoji.oss-cn-hangzhou.aliyuncs.com/商品/1671974468753_QQ图片20220722220423.png',
-        ];
+    const list = current?.productImage ? current?.productImage.split(',') : [];
     setFileList(
       list.map((n) => ({
         uid: nanoid(),
@@ -89,6 +84,7 @@ const CreateTeamModal = <T extends API.IntegralProduct>(props: Iprops<T>) => {
           status: 'done',
           url: result.data as string,
         };
+        formRef.current?.setFieldValue('productImage', result.data);
         setFileList([...fileList, file]);
       }
       console.log(result.data);
@@ -110,9 +106,9 @@ const CreateTeamModal = <T extends API.IntegralProduct>(props: Iprops<T>) => {
               }
             }
             formRef.current?.setFieldsValue(editValues);
-          } else {
-            formRef.current?.resetFields();
           }
+        } else {
+          formRef.current?.resetFields();
         }
         onOpenChange(open);
       }}
@@ -143,27 +139,55 @@ const CreateTeamModal = <T extends API.IntegralProduct>(props: Iprops<T>) => {
               colProps: 24,
               renderFormItem: () => {
                 return (
-                  <ProFormUploadButton
-                    title="上传图片"
-                    listType="picture-card"
-                    max={5}
-                    fileList={fileList}
-                    fieldProps={{
-                      customRequest: (options) => handleUploadFile(options),
-                      onRemove: async (file: UploadFile<any>) =>
-                        file?.url ? await handleRemove(file.url) : true,
-                    }}
-                    onChange={handleChange}
-                  />
+                  <>
+                    <ProFormUploadButton
+                      title="上传图片"
+                      listType="picture-card"
+                      max={5}
+                      fileList={fileList}
+                      fieldProps={{
+                        onPreview: (file) => {
+                          if (file && file?.url) {
+                            setPriviewSrc(file?.url);
+                            setVisible(true);
+                          }
+                        },
+                        customRequest: (options) => handleUploadFile(options),
+                        onRemove: async (file: UploadFile<any>) =>
+                          file?.url ? await handleRemove(file.url) : true,
+                      }}
+                      onChange={({ fileList: newFileList }) => setFileList(newFileList)}
+                    />
+                    <Image
+                      src={priviewSrc}
+                      style={{ display: 'none' }}
+                      preview={{
+                        visible,
+                        src: priviewSrc,
+                        onVisibleChange: (value) => {
+                          setVisible(value);
+                        },
+                      }}
+                    />
+                  </>
                 );
               },
             };
           } else if (n.dataIndex === 'introduction') {
             return { ...n, colProps: 24 };
+          } else if (n.dataIndex === 'recommend' || n.dataIndex === 'purchaseLimit') {
+            return {
+              ...n,
+              width: 'md',
+              colProps: {
+                xs: 24,
+                md: 6,
+              },
+            };
           } else if (
             n.dataIndex === 'tagType' ||
             n.dataIndex === 'shopping' ||
-            n.dataIndex === 'recommend'
+            n.dataIndex === 'starter'
           ) {
             return {
               ...n,

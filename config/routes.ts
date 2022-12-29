@@ -75,6 +75,7 @@ export default [
     name: '配置',
     icon: 'setting',
     path: '/setting',
+    access: 'canAdmin',
     component: './setting',
   },
   {

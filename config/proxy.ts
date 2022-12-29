@@ -12,7 +12,7 @@
 export default {
   dev: {
     '/api': {
-      target: 'https://ny21368148.goho.co',
+      target: 'http://47.96.64.19:8888/',
       changeOrigin: true,
       pathRewrite: { '^/api': '' },
     },

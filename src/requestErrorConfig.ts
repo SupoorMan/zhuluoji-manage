@@ -91,11 +91,11 @@ export const errorConfig: RequestConfig = {
       const token = localStorage.getItem('token');
       const { headers } = config;
       // 拦截请求配置，进行个性化处理。
-      const url = 'https://ny21368148.goho.co' + config?.url;
+      const url = '/api' + config?.url;
       return {
         ...config,
         url,
-        headers: { ...headers, token_sys: token || '', manage: token || '' },
+        headers: { ...headers, 'Access-Control-Allow-Headers': 'manage', manage: token || '-1' },
       };
     },
   ],
@@ -105,10 +105,10 @@ export const errorConfig: RequestConfig = {
     (response) => {
       // 拦截响应数据，进行个性化处理
       const { data, headers } = response; // as unknown as ResponseStructure;
-      console.log(headers.token_sys);
+      console.log(headers.manage);
       const token = localStorage.getItem('token');
-      if (headers.token_sys && headers.token_sys !== token) {
-        localStorage.setItem('token', headers.token_sys);
+      if (headers.manage && headers.manage !== token) {
+        localStorage.setItem('token', headers.manage);
       }
       if (data?.code !== 200) {
         message.error(data?.msg);

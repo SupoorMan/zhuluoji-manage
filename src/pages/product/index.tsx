@@ -130,12 +130,41 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '星级',
-      dataIndex: 'starter',
-      valueType: 'rate',
-      hideInTable: true,
+      title: '剩余数量',
+      dataIndex: 'totals',
+      valueType: 'digit',
+      hideInSearch: true,
+      formItemProps: {
+        rules: [{ required: true, message: '剩余数量为必填项' }],
+      },
+      fieldProps: {
+        style: { width: '320px' },
+        precision: 0,
+      },
+    },
+    {
+      title: '规格',
+      dataIndex: 'amount',
       hideInSearch: true,
     },
+
+    {
+      title: '限购数量 ',
+      dataIndex: 'purchaseLimit',
+      valueType: 'digit',
+      render: (_) => <>每人限购{_}个</>,
+      hideInSearch: true,
+    },
+    {
+      title: '是否推荐',
+      dataIndex: 'recommend',
+      valueType: 'switch',
+      initialValue: 0,
+      render: (_, record) => {
+        return record.recommend === 1 ? <Tag color="green">推荐</Tag> : <Tag>不推荐</Tag>;
+      },
+    },
+
     {
       title: '上架状态',
       dataIndex: 'shopping',
@@ -172,13 +201,11 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '是否推荐',
-      dataIndex: 'recommend',
-      valueType: 'switch',
-      initialValue: 0,
-      render: (_, record) => {
-        return record.recommend === 1 ? <Tag color="green">推荐</Tag> : <Tag>不推荐</Tag>;
-      },
+      title: '星级',
+      dataIndex: 'starter',
+      valueType: 'rate',
+      hideInTable: true,
+      hideInSearch: true,
     },
     {
       title: '更新时间',
@@ -340,7 +367,7 @@ const TableList: React.FC = () => {
         closable={false}
       >
         {currentRow?.productName && (
-          <Card type="inner" title="商品信息">
+          <Card type="inner" title="商品信息" style={{ marginBottom: 24 }}>
             <ProDescriptions<API.IntegralProduct>
               column={3}
               dataSource={currentRow}

@@ -23,7 +23,7 @@ export async function deleteFile(
     }
   });
 
-  return request<API.tongyixiangyingtiResult>('/file/delete', {
+  return request<API.CommonResult>('/file/delete', {
     method: 'POST',
     data: formData,
     requestType: 'form',
@@ -37,6 +37,7 @@ export async function uploadFile(
   params: API.uploadModel,
   body: {},
   file?: File,
+  onProgress?: (percent: number) => void,
   options?: { [key: string]: any },
 ) {
   const formData = new FormData();
@@ -62,6 +63,11 @@ export async function uploadFile(
       ...params,
     },
     data: formData,
+    onUploadProgress: function (progress: ProgressEvent) {
+      console.log(progress);
+      const { loaded, total } = progress;
+      onProgress && onProgress(Math.round((loaded / total) * 100));
+    },
     requestType: 'form',
     ...(options || {}),
   });
