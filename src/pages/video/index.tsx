@@ -1,4 +1,4 @@
-import { pageUsers, updateUser } from '@/services/miniprogram/manageUser';
+import { listConfigInfo, deleteConfigInfo } from '@/services/miniprogram/setting';
 import { PlusOutlined } from '@ant-design/icons';
 import {
   ActionType,
@@ -13,41 +13,37 @@ import React, { useRef, useState } from 'react';
 import EditModal from './components/EditModal';
 
 /**
- * @zh-CN 开启/禁用节点
- * @param API.ManageUser
+ *  Delete node
+ * @zh-CN 删除节点
+ *
+ * @param selectedRows
  */
-const handleRemove = async (fields: API.ManageUser) => {
-  const hide = message.loading(`${fields.state === 1 ? '开启' : '禁用'}中`);
+const handleRemove = async (fields: API.ConfigInfo) => {
+  const hide = message.loading('正在删除');
   if (!fields) return true;
   try {
-    await updateUser({ ...fields });
+    await deleteConfigInfo({ ...fields });
     hide();
-    message.success(`${fields.state === 1 ? '开启' : '禁用'}成功`);
+    message.success('删除成功');
     return true;
   } catch (error) {
     hide();
-    message.error(`${fields.state === 1 ? '开启' : '禁用'}失败, 请稍后重试`);
+    message.error('删除失败, 请稍后重试');
     return false;
   }
 };
 
-const AdminList: React.FC = () => {
+const ConfigList: React.FC = () => {
   const [createModalOpen, handleModalOpen] = useState<boolean>(false); // 新建窗口的弹窗
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.ManageUser>();
-  const columns: ProColumns<API.ManageUser>[] = [
+  const [currentRow, setCurrentRow] = useState<API.ConfigInfo>();
+  const columns: ProColumns<API.ConfigInfo>[] = [
     {
-      title: '手机号(账号)',
-      dataIndex: 'phone',
+      title: '名称',
+      dataIndex: 'context',
       formItemProps: {
-        rules: [
-          { required: true, message: '手机号为必填项' },
-          {
-            pattern: /^1\d{10}$/,
-            message: '手机号格式错误！',
-          },
-        ],
+        rules: [{ required: true, message: '名称为必填项' }],
       },
       render: (dom, entity) => {
         return (
@@ -63,17 +59,29 @@ const AdminList: React.FC = () => {
       },
     },
     {
-      title: '登录密码',
-      dataIndex: 'pwd',
-      hideInSearch: true,
-      hideInSetting: true,
-      hideInDescriptions: true,
-      hideInTable: true,
-      valueType: 'password',
+      title: 'key',
+      dataIndex: 'key',
       formItemProps: {
-        rules: [{ required: true, message: '密码为必填项' }],
+        rules: [{ required: true, message: 'key为必填项' }],
       },
     },
+    {
+      title: 'value',
+      dataIndex: 'value',
+      formItemProps: {
+        rules: [{ required: true, message: 'value为必填项' }],
+      },
+    },
+    {
+      title: '配置描述',
+      dataIndex: 'details',
+      valueType: 'textarea',
+      hideInSearch: true,
+      formItemProps: {
+        rules: [{ required: true, message: '配置描述为必填项' }],
+      },
+    },
+
     {
       title: '状态',
       dataIndex: 'state',
@@ -112,21 +120,13 @@ const AdminList: React.FC = () => {
         </a>,
         <TableDropdown
           key="actionGroup"
-          menus={[
-            {
-              key: 'delete',
-              name: record.state === 1 ? '禁用' : '开启',
-              onClick: async () => {
-                const success = await handleRemove({
-                  ...record,
-                  state: record.state === 1 ? 0 : 1,
-                });
-                if (success) {
-                  actionRef.current?.reload();
-                }
-              },
-            },
-          ]}
+          onSelect={async () => {
+            const success = await handleRemove(record);
+            if (success) {
+              actionRef.current?.reload();
+            }
+          }}
+          menus={[{ key: 'delete', name: '删除' }]}
         />,
       ],
     },
@@ -134,7 +134,7 @@ const AdminList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<API.ManageUser, API.PageParams>
+      <ProTable<API.ConfigInfo>
         headerTitle="列表"
         actionRef={actionRef}
         rowKey="id"
@@ -149,14 +149,15 @@ const AdminList: React.FC = () => {
             <PlusOutlined /> 新建
           </Button>,
         ]}
-        request={async (params) => {
-          const { data } = await pageUsers(params);
-          return { data: data?.records || 0, success: true, total: data?.totle || 0 };
+        request={async () => {
+          const { data } = await listConfigInfo();
+          return { data: (data as []) || [], success: true, total: data?.totle || 0 };
         }}
+        pagination={false}
         columns={columns}
       />
-      <EditModal<API.ManageUser>
-        title={`${currentRow ? `编辑` : `新建`} 管理员`}
+      <EditModal<API.ConfigInfo>
+        title={`${currentRow ? `编辑` : `新建`} 配置`}
         width={400}
         open={createModalOpen}
         onFinish={(success: boolean) => {
@@ -172,7 +173,7 @@ const AdminList: React.FC = () => {
           }
         }}
         current={currentRow}
-        columns={columns as ProFormColumnsType<API.ManageUser>[]}
+        columns={columns as ProFormColumnsType<API.ConfigInfo>[]}
       />
       <Drawer
         width={400}
@@ -184,16 +185,16 @@ const AdminList: React.FC = () => {
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<API.ManageUser>
+          <ProDescriptions<API.ConfigInfo>
             column={1}
-            title="管理员详情"
+            title="配置详情"
             request={async () => ({
               data: currentRow || {},
             })}
             params={{
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<API.ManageUser>[]}
+            columns={columns as ProDescriptionsItemProps<API.ConfigInfo>[]}
           />
         )}
       </Drawer>
@@ -201,4 +202,4 @@ const AdminList: React.FC = () => {
   );
 };
 
-export default AdminList;
+export default ConfigList;

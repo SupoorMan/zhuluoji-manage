@@ -14,6 +14,7 @@ import * as order from './orders';
 import * as prodCollection from './prodCollection';
 import * as signIn from './signIn';
 import * as manageUser from './manageUser';
+import * as banner from './banner';
 export default {
   salesAfter,
   notices,
@@ -27,4 +28,5 @@ export default {
   prodCollection,
   signIn,
   manageUser,
+  banner,
 };

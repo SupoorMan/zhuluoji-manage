@@ -17,7 +17,7 @@ const Settings: LayoutSettings & {
   colorWeak: false,
   title: '酷酷的侏罗纪vip',
   pwa: false,
-  logo: undefined,
+  logo: false,
   iconfontUrl: '',
   menu: {
     locale: false,

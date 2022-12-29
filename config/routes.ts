@@ -72,6 +72,18 @@ export default [
     component: './User/Searching',
   },
   {
+    name: '首页轮播',
+    icon: 'tool',
+    path: '/banner',
+    component: './banner',
+  },
+  {
+    name: '直播',
+    icon: 'videoCamera',
+    path: '/video',
+    component: './video',
+  },
+  {
     name: '配置',
     icon: 'setting',
     path: '/setting',

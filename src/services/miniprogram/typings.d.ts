@@ -10,6 +10,17 @@ declare namespace API {
     value?: string;
   }
 
+  type Banner = {
+    createTime?: string;
+    id?: number;
+    /** 跳转地址 */
+    links?: string;
+    /** 排序 */
+    sorts?: number;
+    /** 路径 */
+    url?: string;
+  };
+
   interface ProdDetailParams {
     /** productId */
     productId?: number;
