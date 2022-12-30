@@ -15,6 +15,7 @@ import * as prodCollection from './prodCollection';
 import * as signIn from './signIn';
 import * as manageUser from './manageUser';
 import * as banner from './banner';
+import * as livePreview from './livePreview';
 export default {
   salesAfter,
   notices,
@@ -29,4 +30,5 @@ export default {
   signIn,
   manageUser,
   banner,
+  livePreview,
 };

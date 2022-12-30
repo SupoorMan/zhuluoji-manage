@@ -20,7 +20,7 @@ const Index = <T extends { [key: string]: any }>({
     layoutType,
     open,
     colProps: { span: 12 },
-    rowProps: { gutter: [16, 0] },
+    rowProps: { gutter: [24, 0] },
     grid: layoutType !== 'LightFilter' && layoutType !== 'QueryFilter',
     onFinish: async (values: T) => onFinish(values),
     columns: (layoutType === 'StepsForm' ? [columns] : columns) as any,

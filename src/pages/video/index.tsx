@@ -1,4 +1,4 @@
-import { listConfigInfo, deleteConfigInfo } from '@/services/miniprogram/setting';
+import { pageLivePreview, updateLivePreview } from '@/services/miniprogram/livePreview';
 import { PlusOutlined } from '@ant-design/icons';
 import {
   ActionType,
@@ -8,42 +8,48 @@ import {
   TableDropdown,
 } from '@ant-design/pro-components';
 import { PageContainer, ProDescriptions, ProTable } from '@ant-design/pro-components';
-import { Button, Drawer, message } from 'antd';
-import React, { useRef, useState } from 'react';
+import { Button, Drawer, Space, Tag, Image, message } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 import EditModal from './components/EditModal';
 
 /**
- *  Delete node
- * @zh-CN 删除节点
- *
- * @param selectedRows
+ * @fields  需要更新状态的直播预告户
  */
-const handleRemove = async (fields: API.ConfigInfo) => {
-  const hide = message.loading('正在删除');
-  if (!fields) return true;
+const handleRemove = async (field: API.LivePreview) => {
+  const hide = message.loading('正在更新');
   try {
-    await deleteConfigInfo({ ...fields });
+    await updateLivePreview({ ...field });
     hide();
-    message.success('删除成功');
+    message.success('更新成功');
     return true;
   } catch (error) {
     hide();
-    message.error('删除失败, 请稍后重试');
+    message.error('更新失败, 请稍后重试');
     return false;
   }
 };
 
-const ConfigList: React.FC = () => {
+const LivePreviewList: React.FC = () => {
   const [createModalOpen, handleModalOpen] = useState<boolean>(false); // 新建窗口的弹窗
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.ConfigInfo>();
-  const columns: ProColumns<API.ConfigInfo>[] = [
+  const [currentRow, setCurrentRow] = useState<API.LivePreview>();
+  const columns: ProColumns<API.LivePreview>[] = [
     {
-      title: '名称',
-      dataIndex: 'context',
+      title: '直播封面',
+      dataIndex: 'images',
+      valueType: 'image',
+      hideInSearch: true,
       formItemProps: {
-        rules: [{ required: true, message: '名称为必填项' }],
+        rules: [{ required: true, message: '直播封面为必填项' }],
+      },
+      render: (_, record) => <Image src={record.images} width={130} height={80} />,
+    },
+    {
+      title: '主持人',
+      dataIndex: 'hoster',
+      formItemProps: {
+        rules: [{ required: true, message: '主持人为必填项' }],
       },
       render: (dom, entity) => {
         return (
@@ -59,50 +65,68 @@ const ConfigList: React.FC = () => {
       },
     },
     {
-      title: 'key',
-      dataIndex: 'key',
+      title: '直播间类型',
+      dataIndex: 'type',
+      hideInTable: true,
+      hideInDescriptions: true,
       formItemProps: {
-        rules: [{ required: true, message: 'key为必填项' }],
+        rules: [{ required: true, message: '直播间类型为必填项' }],
       },
-    },
-    {
-      title: 'value',
-      dataIndex: 'value',
-      formItemProps: {
-        rules: [{ required: true, message: 'value为必填项' }],
-      },
-    },
-    {
-      title: '配置描述',
-      dataIndex: 'details',
-      valueType: 'textarea',
-      hideInSearch: true,
-      formItemProps: {
-        rules: [{ required: true, message: '配置描述为必填项' }],
-      },
-    },
-
-    {
-      title: '状态',
-      dataIndex: 'state',
-      hideInForm: true,
       valueEnum: {
         0: {
-          text: '禁用',
+          text: '汀戴家具',
           status: 'Default',
         },
         1: {
-          text: '有效',
+          text: '酷酷的侏罗纪',
           status: 'Processing',
         },
       },
     },
     {
-      title: '更新时间',
-      dataIndex: 'updateTime',
-      valueType: 'dateTime',
-      hideInForm: true,
+      title: '直播链接',
+      dataIndex: 'links',
       hideInSearch: true,
+      formItemProps: {
+        rules: [{ required: true, message: '直播链接为必填项' }],
+      },
+      render: (_, record) => {
+        return (
+          <Space>
+            {_}
+            <Tag color={record.type === 1 ? 'red' : 'blue'}>{record.type}</Tag>
+          </Space>
+        );
+      },
+    },
+    {
+      title: '直播日期',
+      dataIndex: 'dates',
+      valueType: 'date',
+      formItemProps: {
+        rules: [{ required: true, message: '直播日期为必填项' }],
+      },
+      colSpan: 8,
+      width: 'md',
+    },
+    {
+      title: '直播时间',
+      dataIndex: 'stamps',
+      hideInTable: true,
+      hideInSearch: true,
+      valueType: 'timeRange',
+      formItemProps: {
+        rules: [{ required: true, message: '直播时间为必填项' }],
+      },
+      colSpan: 8,
+      width: 'md',
+    },
+    {
+      title: '预约数',
+      dataIndex: 'stater',
+      valueType: 'digit',
+      hideInSearch: true,
+      hideInForm: true,
     },
     {
       title: '操作',
@@ -121,60 +145,58 @@ const ConfigList: React.FC = () => {
         <TableDropdown
           key="actionGroup"
           onSelect={async () => {
-            const success = await handleRemove(record);
+            const success = await handleRemove({ ...record, status: record.status === 1 ? 0 : 1 });
             if (success) {
               actionRef.current?.reload();
             }
           }}
-          menus={[{ key: 'delete', name: '删除' }]}
+          menus={[{ key: 'delete', name: record.status === 1 ? '关闭' : '开始' }]}
         />,
       ],
     },
   ];
-
+  useEffect(() => {
+    console.log('eeft', createModalOpen);
+  }, [createModalOpen]);
   return (
     <PageContainer>
-      <ProTable<API.ConfigInfo>
-        headerTitle="列表"
+      <ProTable<API.LivePreview>
+        headerTitle="直播预告列表"
         actionRef={actionRef}
         rowKey="id"
         toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              handleModalOpen(true);
-            }}
-          >
+          <Button type="primary" key="primary" onClick={() => handleModalOpen(true)}>
             <PlusOutlined /> 新建
           </Button>,
         ]}
-        request={async () => {
-          const { data } = await listConfigInfo();
-          return { data: (data as []) || [], success: true, total: data?.totle || 0 };
+        request={async (params) => {
+          const { data } = await pageLivePreview(params);
+          return { data: data?.records || [], success: true, total: data?.totle || 0 };
         }}
         pagination={false}
         columns={columns}
       />
-      <EditModal<API.ConfigInfo>
-        title={`${currentRow ? `编辑` : `新建`} 配置`}
-        width={400}
-        open={createModalOpen}
-        onFinish={(success: boolean) => {
-          if (success) {
-            actionRef.current?.reload();
-            handleModalOpen(false);
-          }
-        }}
-        onOpenChange={(open) => {
-          handleModalOpen(open);
-          if (!open) {
-            setCurrentRow(undefined);
-          }
-        }}
-        current={currentRow}
-        columns={columns as ProFormColumnsType<API.ConfigInfo>[]}
-      />
+      {createModalOpen && (
+        <EditModal<API.LivePreview>
+          title={`${currentRow ? `编辑` : `新建`} 直播预告`}
+          width={700}
+          open={createModalOpen}
+          onFinish={(success: boolean) => {
+            if (success) {
+              actionRef.current?.reload();
+              handleModalOpen(false);
+            }
+          }}
+          onOpenChange={(open) => {
+            handleModalOpen(open);
+            if (!open) {
+              setCurrentRow(undefined);
+            }
+          }}
+          current={currentRow}
+          columns={columns as ProFormColumnsType<API.LivePreview>[]}
+        />
+      )}
       <Drawer
         width={400}
         open={showDetail}
@@ -185,16 +207,16 @@ const ConfigList: React.FC = () => {
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<API.ConfigInfo>
+          <ProDescriptions<API.LivePreview>
             column={1}
-            title="配置详情"
+            title="直播预告详情"
             request={async () => ({
               data: currentRow || {},
             })}
             params={{
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<API.ConfigInfo>[]}
+            columns={columns as ProDescriptionsItemProps<API.LivePreview>[]}
           />
         )}
       </Drawer>
@@ -202,4 +224,4 @@ const ConfigList: React.FC = () => {
   );
 };
 
-export default ConfigList;
+export default LivePreviewList;

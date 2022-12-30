@@ -17,7 +17,7 @@ export async function addAfterSals(body: API.AfterSales, options?: { [key: strin
 /** 售后详情查询 传id参数 GET /afterSales/get */
 export async function getSalesDetail(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.SalesParams,
+  params: API.IdParams,
   options?: { [key: string]: any },
 ) {
   return request<API.CommonResult>('/afterSales/get', {

@@ -1,14 +1,14 @@
 declare namespace API {
-  interface PageParams {
+  type PageParams = {
     current?: number;
     pageSize?: number;
-  }
-  interface ConfigInfoParams {
+  };
+  type ConfigInfoParams = {
     /** key */
     key?: string;
     /** value */
     value?: string;
-  }
+  };
 
   type Banner = {
     createTime?: string;
@@ -21,15 +21,15 @@ declare namespace API {
     url?: string;
   };
 
-  interface ProdDetailParams {
+  type ProdDetailParams = {
     /** productId */
     productId?: number;
-  }
+  };
 
-  interface SalesParams {
+  type IdParams = {
     /** id */
     id?: number;
-  }
+  };
 
   type ManageUser = {
     createTime?: string;
@@ -109,60 +109,91 @@ declare namespace API {
     updateTime?: string;
     createTime?: string;
   };
-
-  interface ListSignInParams {
+  type LivePreview = {
+    createTime?: string;
+    /**说明+简介 */
+    detail?: string;
+    /** 日期: 格式.2022-12-29 */
+    dates?: string;
+    /**  */
+    endTime?: string;
+    /** 主持人 */
+    hoster?: string;
+    id?: number;
+    /** 图片 */
+    images?: string;
+    /** 链接 */
+    links?: string;
+    /** 主打商品 */
+    products?: string;
+    /** 开始时间-结束时间 */
+    stamps?: string;
+    /** 预约数 */
+    stater?: number;
+    /** 状态: 0.不展示 1.展示 */
+    status?: number;
+    /** 类型: 0.汀戴家具 1.酷酷的侏罗纪 */
+    type?: number;
+  };
+  type ListSignInParams = {
     /** 时间字符串(yyyy-MM-dd) */
     date: string;
-  }
+  };
 
-  interface ListConfigInfoParams {
+  type ListConfigInfoParams = {
     /** key */
     key?: string;
-  }
+  };
+  type pageLiveParams = {
+    /** 小程序用户id */
+    appletUserId?: number;
+    /** 通知类型: 0.站内 1.系统 2.直播预告 3.活动消息 4.订单物流 5.等级 6.积分 */
+    type?: number;
+  } & PageParams;
 
-  interface NotifyParams extends PageParams {
+  type NotifyParams = {
     /** 小程序用户id */
     appletUserId?: number;
     /** 通知类型: 0.站内 1.系统 2.直播预告 3.活动消息 4.订单物流 5.等级 6.积分 */
     interface?: number;
-  }
+  } & PageParams;
 
-  interface PageUserInfoParams extends PageParams {
+  type PageUserInfoParams = {
     /** 等级 */
     level?: number;
     /** 手机号 */
     phone?: string;
     /** 状态: 0.禁用 1.可用 */
     state?: number;
-  }
+  } & PageParams;
 
-  interface PageProdParams extends PageParams {
+  type PageProdParams = {
     name?: string;
-  }
+  };
 
-  interface PageLoginLogParams extends PageParams {
+  type PageLoginLogParams = {
     /** 结束时间 */
     endTime?: string;
     /** 开始时间 */
     startTime?: string;
     /** 类型: 0.小程序 1.系统后台 */
     interface?: number;
-  }
+  } & PageParams;
 
-  interface pageOrderParams extends PageParams {
+  type pageOrderParams = {
     appletUserId?: number;
-  }
+  } & PageParams;
 
-  interface PageAfterSalesParams extends PageParams {
+  type PageAfterSalesParams = {
     /** 小程序用户id */
     appletUserId?: number;
     /** 订单id */
     ordersId?: number;
     /** 售后状态: 0.售后申请 1.处理中 2.完成 */
     status?: number;
-  }
+  } & PageParams;
 
-  interface ConfigInfo {
+  type ConfigInfo = {
     /** context */
     context?: string;
     createTime?: string;
@@ -176,9 +207,9 @@ declare namespace API {
     updateTime?: string;
     /** value */
     value?: string;
-  }
+  };
 
-  interface ProductStater {
+  type ProductStater = {
     /** 小程序用户id */
     appletUserId?: number;
     /** 创建时间 */
@@ -188,7 +219,7 @@ declare namespace API {
     productId?: number;
     /** 收藏: -1.未收藏 1.收藏 */
     status?: number;
-  }
+  };
 
   type AfterSales = {
     /** 小程序用户id */
@@ -206,7 +237,7 @@ declare namespace API {
     updateTime?: string;
   };
 
-  interface AppletDeliveryAddress {
+  type AppletDeliveryAddress = {
     /** 详细地址 */
     address?: string;
     /** 小程序用户id */
@@ -226,26 +257,26 @@ declare namespace API {
     /** 收件人 */
     receiver?: string;
     updateTime?: string;
-  }
-  interface UserParams extends PageParams {
+  };
+  type UserParams = {
     phone?: string;
-  }
-  interface CommonResult {
+  } & PageParams;
+  type CommonResult = {
     /** 响应码: 200.成功 500.错误 1000以上.失败 */
     code?: number;
     /** 返回数据 */
     data?: Record<string, any>;
     /** 响应消息 */
     msg?: string;
-  }
-  interface fileUploadResult {
+  };
+  type fileUploadResult = {
     /** 响应码: 200.成功 500.错误 1000以上.失败 */
     code?: number;
     /** 返回数据 */
     data?: string;
     /** 响应消息 */
     msg?: string;
-  }
+  };
   type UpDownProductsParams = {
     /** id集合 */
     ids?: number[];
@@ -253,7 +284,7 @@ declare namespace API {
     shopping?: number;
   };
 
-  interface AppletNotify {
+  type AppletNotify = {
     /** 小程序用户id */
     appletUserId?: number;
     createTime?: string;
@@ -265,21 +296,21 @@ declare namespace API {
     /** 通知类型: 0.站内 1.系统 2.直播预告 3.活动消息 4.订单物流 5.等级 6.积分 */
     interface?: number;
     updateTime?: string;
-  }
+  };
 
   type uploadModel = {
     /** 传项目名称 */
     area: string;
   };
 
-  interface WeChatLogin {
+  type WeChatLogin = {
     /** 微信登录凭证[code] */
     code?: string;
     /** 微信用户信息 */
     userInfo?: WeChatUserInfo;
-  }
+  };
 
-  interface WeChatUserInfo {
+  type WeChatUserInfo = {
     /** 头像url */
     avatarUrl?: string;
     /** 城市 */
@@ -294,9 +325,9 @@ declare namespace API {
     nickName?: string;
     /** 省 */
     province?: string;
-  }
+  };
 
-  interface AppletUser {
+  type AppletUser = {
     /** 所在地区 */
     address?: string;
     /** 头像 */
@@ -335,5 +366,5 @@ declare namespace API {
     uid?: string;
     /** 更新时间 */
     updateTime?: string;
-  }
+  };
 }
