@@ -169,7 +169,7 @@ declare namespace API {
 
   type PageProdParams = {
     name?: string;
-  };
+  } & PageParams;
 
   type PageLoginLogParams = {
     /** 结束时间 */
