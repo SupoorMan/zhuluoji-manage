@@ -4,10 +4,7 @@ import { request } from '@umijs/max';
 
 /** 文件删除 文件删除 POST /file/delete */
 export async function deleteFile(
-  body: {
-    /** file */
-    file: string[];
-  },
+  body: { file: string /** file */ },
   options?: { [key: string]: any },
 ) {
   const formData = new FormData();

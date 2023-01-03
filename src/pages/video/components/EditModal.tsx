@@ -48,7 +48,7 @@ const handleSubmit = async (
  */
 const handleRemove = async (filePath: string) => {
   try {
-    await deleteFile({ file: [filePath] });
+    await deleteFile({ file: filePath });
     return true;
   } catch (error) {
     return false;
