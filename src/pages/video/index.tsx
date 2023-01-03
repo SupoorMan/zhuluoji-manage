@@ -5,7 +5,6 @@ import {
   ProColumns,
   ProDescriptionsItemProps,
   ProFormColumnsType,
-  TableDropdown,
 } from '@ant-design/pro-components';
 import { PageContainer, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import { Button, Drawer, Space, Tag, Image, message } from 'antd';
@@ -94,7 +93,9 @@ const LivePreviewList: React.FC = () => {
         return (
           <Space>
             {_}
-            <Tag color={record.type === 1 ? 'red' : 'blue'}>{record.type}</Tag>
+            <Tag color={record.type === 1 ? 'red' : 'blue'}>
+              {record?.type ? ['汀戴家具', '酷酷的侏罗纪'][record?.type] : '-'}
+            </Tag>
           </Space>
         );
       },
@@ -106,19 +107,18 @@ const LivePreviewList: React.FC = () => {
       formItemProps: {
         rules: [{ required: true, message: '直播日期为必填项' }],
       },
-      colSpan: 8,
       width: 'md',
     },
     {
       title: '直播时间',
       dataIndex: 'stamps',
-      hideInTable: true,
+      // hideInTable: true,
       hideInSearch: true,
       valueType: 'timeRange',
       formItemProps: {
         rules: [{ required: true, message: '直播时间为必填项' }],
       },
-      colSpan: 8,
+      render: (_, record) => record?.stamps,
       width: 'md',
     },
     {
@@ -142,16 +142,17 @@ const LivePreviewList: React.FC = () => {
         >
           编辑
         </a>,
-        <TableDropdown
-          key="actionGroup"
-          onSelect={async () => {
+        <a
+          key="show"
+          onClick={async () => {
             const success = await handleRemove({ ...record, status: record.status === 1 ? 0 : 1 });
             if (success) {
               actionRef.current?.reload();
             }
           }}
-          menus={[{ key: 'delete', name: record.status === 1 ? '关闭' : '开始' }]}
-        />,
+        >
+          {record.status === 1 ? '关闭' : '展示'}
+        </a>,
       ],
     },
   ];

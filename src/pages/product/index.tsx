@@ -8,7 +8,7 @@ import {
   TableDropdown,
 } from '@ant-design/pro-components';
 import { PageContainer, ProDescriptions, ProTable } from '@ant-design/pro-components';
-import { Button, Card, Drawer, message, Space, Tag } from 'antd';
+import { Button, Card, Drawer, message, Space, Tag, Image } from 'antd';
 import React, { useRef, useState } from 'react';
 import RichEditor from './components/BraftEdit';
 import EditModal from './components/EditModal';
@@ -72,7 +72,6 @@ const TableList: React.FC = () => {
   const [createModalOpen, handleModalOpen] = useState<boolean>(false); //新建窗口的弹窗
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [newDetail, setNewDetail] = useState<string>('');
-
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.IntegralProduct>();
   const [selectedRows, setSelectedRows] = useState<API.IntegralProduct[]>([]);
@@ -243,11 +242,19 @@ const TableList: React.FC = () => {
       dataIndex: 'productImage',
       hideInSearch: true,
       hideInTable: true,
-      fieldProps: {
-        width: 100,
-      },
+      width: 'md',
       formItemProps: {
         rules: [{ required: true, message: '至少有一张商品图片' }],
+      },
+      render: (_, record) => {
+        const imags = record.productImage?.split(',');
+        return (
+          <Space>
+            {imags?.map((n) => (
+              <Image src={n} width={100} height={80} key={n} />
+            ))}
+          </Space>
+        );
       },
     },
     {

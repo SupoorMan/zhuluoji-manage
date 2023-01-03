@@ -146,13 +146,15 @@ const CreateTeamModal = <T extends API.IntegralProduct>(props: Iprops<T>) => {
           if (n.dataIndex === 'productImage') {
             return {
               ...n,
-              colProps: 24,
+              // width: 'md',
+              colProps: { span: 24 },
               renderFormItem: () => {
                 return (
                   <>
                     <ProFormUploadButton
                       title="上传图片"
                       listType="picture-card"
+                      colProps={{ span: 24 }}
                       max={5}
                       fileList={fileList}
                       fieldProps={{

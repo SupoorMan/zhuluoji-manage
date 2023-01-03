@@ -10,6 +10,7 @@ import { message, Image, UploadFile } from 'antd';
 import { addLivePreview, updateLivePreview } from '@/services/miniprogram/livePreview';
 import { deleteFile, uploadFile } from '@/services/miniprogram/file';
 import { UploadRequestOption } from 'rc-upload/lib/interface';
+import { getProds } from '@/services/miniprogram/product';
 
 interface Iprops<T> {
   title: string;
@@ -60,25 +61,22 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
   const { title, current, onOpenChange, columns, onFinish, ...otherConfig } = props;
   const formRef = useRef<ProFormInstance>();
   const [visible, setVisible] = useState<boolean>(false);
-  // const [modalOpen, setModalOpen] = useState<boolean>(open);
+  const [prods, setProds] = useState<API.IntegralProduct[]>();
   const [priviewSrc, setPriviewSrc] = useState<string>('');
   const [fileList, setFileList] = useState<UploadFile[]>();
   useEffect(() => {
-    if (current?.url) {
+    if (current?.images) {
       setFileList([
         {
           uid: nanoid(),
-          name: current?.url.split('_')[1],
+          name: current?.images.split('_')[1],
           status: 'done',
-          url: current?.url,
+          url: current?.images,
         },
       ]);
     }
   }, [current]);
-  // useEffect(() => {
-  //   console.log(open);
-  //   setModalOpen(open);
-  // }, [open]);
+
   const handleUploadFile = async (options: UploadRequestOption<any>) => {
     const file = options.file as File;
     if (file) {
@@ -108,41 +106,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
     initialValue: [{ name: '', price: '', count: '' }],
     fieldProps: {
       copyIconProps: false,
-      // 新增按钮样式配置
-      // creatorButtonProps: {
-      //   type: 'text',
-      //   position: 'top',
-      //   creatorButtonText: '',
-      //   block: false,
-      //    className: cls.addFormListBtn2,
-      // },
-      // convertValue: (value) => JSON.parse(value),
-      // itemRender: ({ listDom, action }: any, { record, index }: any) => {
-      //   return (
-      //     <ProCard
-      //       bordered
-      //       extra={action}
-      //       title={record?.name || `资源 ${index + 1}`}
-      //       style={{
-      //         marginBlockEnd: 8,
-      //       }}
-      //     >
-      //       {listDom}
-      //     </ProCard>
-      //   );
-      // },
-      // rules: [
-      //   {
-      //     required: true,
-      //     validator: async (_: any, value: string | any[]) => {
-      //       console.log(value);
-      //       if (value && value.length > 0) {
-      //         return;
-      //       }
-      //       throw new Error('至少要有一项资源信息！');
-      //     },
-      //   },
-      // ],
+      creatorButtonProps: {},
     },
     columns: [
       {
@@ -155,6 +119,22 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
           {
             title: '商品名称',
             dataIndex: 'name',
+            valueType: 'select',
+            fieldProps: {
+              showSearch: true,
+              labelInValue: true,
+              placeholder: '请输入商品名称搜索积分商品库',
+              fieldNames: {
+                label: 'productName',
+                value: 'productName',
+              },
+              onSearch: async (value?: string) => {
+                const result = await getProds({ name: value, pageSize: 30, current: 1 });
+                setProds(result.data?.records);
+                return result.data?.records;
+              },
+              options: prods,
+            },
             colProps: { span: 12 },
           },
           {
@@ -165,11 +145,25 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
             valueType: 'digit',
           },
           {
-            title: '商品价格',
-            colProps: { span: 6 },
-            width: 'md',
-            dataIndex: 'price',
-            valueType: 'money',
+            valueType: 'dependency',
+            name: ['name'],
+            columns: ({ name }) => {
+              if (name) {
+                return [
+                  {
+                    title: '商品价格',
+                    colProps: { span: 6 },
+                    width: 'md',
+                    dataIndex: 'price',
+                    fieldProps: {
+                      addonAfter: '积分',
+                    },
+                    initialValue: name?.integral,
+                  },
+                ];
+              }
+              return [];
+            },
           },
         ],
       },
@@ -188,6 +182,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
             formRef.current?.setFieldsValue({
               ...current,
               stamps: current.stamps.split('-'),
+              type: `${current.type}`,
               products: current.products
                 ? JSON.parse(current.products)
                 : { name: '', price: '', count: '' },
@@ -199,10 +194,18 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
       }}
       layoutType="DrawerForm"
       onFinish={async (values) => {
+        const newProds = values.products.map((n: any) =>
+          typeof n.name === 'object' ? { ...n, name: n.name.productName } : { ...n },
+        );
         if (current) {
           onFinish(
             await handleSubmit(
-              { ...current, ...values, products: JSON.stringify(values.products) },
+              {
+                ...current,
+                ...values,
+                stamps: values.stamps.join('-'),
+                products: JSON.stringify(newProds),
+              },
               updateLivePreview,
             ),
           );
@@ -212,7 +215,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
               {
                 ...values,
                 stamps: values.stamps.join('-'),
-                products: JSON.stringify(values.products),
+                products: JSON.stringify(newProds),
               },
               addLivePreview,
             ),
