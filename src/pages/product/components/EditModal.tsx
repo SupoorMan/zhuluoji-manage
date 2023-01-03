@@ -87,7 +87,6 @@ const CreateTeamModal = <T extends API.IntegralProduct>(props: Iprops<T>) => {
         formRef.current?.setFieldValue('productImage', result.data);
         setFileList([...fileList, file]);
       }
-      console.log(result.data);
     }
   };
   return (
@@ -165,8 +164,16 @@ const CreateTeamModal = <T extends API.IntegralProduct>(props: Iprops<T>) => {
                           }
                         },
                         customRequest: (options) => handleUploadFile(options),
-                        onRemove: async (file: UploadFile<any>) =>
-                          file?.url ? await handleRemove(file.url) : true,
+                        onRemove: async (file: UploadFile<any>) => {
+                          if (file?.url) {
+                            const files = fileList.filter((n) => n.url !== file.url);
+                            if (!files || files.length === 0) {
+                              formRef.current?.setFieldValue('productImage', '');
+                            }
+                            return await handleRemove(file.url);
+                          }
+                          return true;
+                        },
                       }}
                       onChange={({ fileList: newFileList }) => setFileList(newFileList)}
                     />

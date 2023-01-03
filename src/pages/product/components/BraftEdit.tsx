@@ -14,10 +14,10 @@ const RichEditor = (props: { detail: string; onChange: (val: string) => void }) 
     props.onChange(editorState?.toHTML());
   }, [editorState]);
 
-  const submitContent = async () => {
-    const htmlContent = editorState?.toHTML();
-    console.log(htmlContent);
-  };
+  // const submitContent = async () => {
+  //   const htmlContent = editorState?.toHTML();
+  //   console.log(htmlContent);
+  // };
   // 上传图片到服务器
   const myUploadFn = async (params: {
     file: File;
@@ -37,7 +37,6 @@ const RichEditor = (props: { detail: string; onChange: (val: string) => void }) 
     }) => void;
     error: (err: { msg: string }) => void;
   }) => {
-    console.log(params.file);
     if (params.file) {
       uploadFile({ area: '积分商品' }, {}, params.file, params.progress).then((result) => {
         if (result.code === 200 && result.data) {
@@ -63,7 +62,7 @@ const RichEditor = (props: { detail: string; onChange: (val: string) => void }) 
       value={editorState}
       media={{ uploadFn: myUploadFn }}
       onChange={setEditorState}
-      onSave={submitContent}
+      // onSave={submitContent}
     />
   );
 };

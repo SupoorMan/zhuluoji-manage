@@ -64,7 +64,7 @@ export async function uploadFile(
     },
     data: formData,
     onUploadProgress: function (progress: ProgressEvent) {
-      console.log(progress);
+      // console.log(progress);
       const { loaded, total } = progress;
       onProgress && onProgress(Math.round((loaded / total) * 100));
     },

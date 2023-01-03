@@ -88,7 +88,6 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
         formRef.current?.setFieldValue('url', result.data);
         setFileList([file]);
       }
-      console.log(result.data);
     }
   };
   return (

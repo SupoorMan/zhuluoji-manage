@@ -121,7 +121,6 @@ const AfterSalesList: React.FC = () => {
         rowKey="id"
         request={async (params) => {
           const { data } = await pageAfterSales(params);
-          console.log(data);
           return { data: data?.records || 0, success: true, total: data?.totle || 0 };
         }}
         columns={columns}

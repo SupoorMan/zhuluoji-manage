@@ -1,4 +1,4 @@
-# 酷酷的侏罗纪vip
+# 酷酷的侏罗纪 vip
 
 ## Environment Prepare
 

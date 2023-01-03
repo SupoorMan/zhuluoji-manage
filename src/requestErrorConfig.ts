@@ -105,7 +105,7 @@ export const errorConfig: RequestConfig = {
     (response) => {
       // 拦截响应数据，进行个性化处理
       const { data, headers } = response; // as unknown as ResponseStructure;
-      console.log(headers.manage);
+      // console.log(headers.manage);
       const token = localStorage.getItem('token');
       if (headers.manage && headers.manage !== token) {
         localStorage.setItem('token', headers.manage);

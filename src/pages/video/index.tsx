@@ -8,7 +8,7 @@ import {
 } from '@ant-design/pro-components';
 import { PageContainer, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import { Button, Drawer, Space, Tag, Image, message } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import EditModal from './components/EditModal';
 
 /**
@@ -156,9 +156,6 @@ const LivePreviewList: React.FC = () => {
       ],
     },
   ];
-  useEffect(() => {
-    console.log('eeft', createModalOpen);
-  }, [createModalOpen]);
   return (
     <PageContainer>
       <ProTable<API.LivePreview>
