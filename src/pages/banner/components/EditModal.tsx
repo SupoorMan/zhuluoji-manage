@@ -140,8 +140,12 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
                             }
                           },
                           customRequest: (options) => handleUploadFile(options),
-                          onRemove: async (file: UploadFile<any>) =>
-                            file?.url ? await handleRemove(file.url) : true,
+                          onRemove: async (file: UploadFile<any>) => {
+                            if (file?.url && (await handleRemove(file.url))) {
+                              formRef.current?.setFieldValue('url', '');
+                            }
+                            return true;
+                          },
                         }}
                         onChange={({ fileList: newFileList }) => setFileList(newFileList)}
                       />

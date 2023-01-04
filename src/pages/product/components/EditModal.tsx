@@ -165,12 +165,11 @@ const CreateTeamModal = <T extends API.IntegralProduct>(props: Iprops<T>) => {
                         },
                         customRequest: (options) => handleUploadFile(options),
                         onRemove: async (file: UploadFile<any>) => {
-                          if (file?.url) {
+                          if (file?.url && (await handleRemove(file.url))) {
                             const files = fileList.filter((n) => n.url !== file.url);
                             if (!files || files.length === 0) {
                               formRef.current?.setFieldValue('productImage', '');
                             }
-                            return await handleRemove(file.url);
                           }
                           return true;
                         },
