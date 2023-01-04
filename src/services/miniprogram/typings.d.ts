@@ -235,6 +235,8 @@ declare namespace API {
     /** 售后状态: 0.售后申请 1.处理中 2.完成 */
     status?: number;
     updateTime?: string;
+    /** 处理备注*/
+    remark?: string;
   };
 
   type AppletDeliveryAddress = {

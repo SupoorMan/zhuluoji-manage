@@ -97,7 +97,7 @@ const AfterSalesList: React.FC = () => {
                   if (solveDetail === '') {
                     message.error('请输入');
                   }
-                  handleUpdate({ ...record, status: 2, solveDetail });
+                  handleUpdate({ ...record, status: 2, remark: solveDetail });
                 },
               });
             }}
