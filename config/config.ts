@@ -119,7 +119,8 @@ export default defineConfig({
   openAPI: [
     {
       requestLibPath: "import { request } from '@umijs/max'",
-      schemaPath: 'http://47.96.64.19:8888/v3/api-docs',
+      // schemaPath: 'http://47.96.64.19:8888/v3/api-docs',
+      schemaPath: 'http://192.168.31.152:8888/v3/api-docs',
       projectName: 'new-mini',
     },
   ],

@@ -16,12 +16,11 @@ import React, { useRef, useState } from 'react';
 
 /**@description 发货
  * @fields 订单信息
- * @sendCode 运单号
  */
-const handleUpdate = async (fields: API.Order, sendCode: string) => {
+const handleUpdate = async (fields: API.Order) => {
   const hide = message.loading('更新中');
   try {
-    await updateStatus({ id: fields.id, status: 2 }, { sendCode });
+    await updateStatus({ id: fields.id, status: 2 });
     hide();
     message.success('更新发货进度成功');
     return true;
@@ -108,6 +107,13 @@ const OrderList: React.FC = () => {
       dataIndex: 'expressFee',
       valueType: 'money',
       hideInSearch: true,
+      render: (_, record) => {
+        return (
+          <>
+            {record?.transferDetail}:{_}
+          </>
+        );
+      },
     },
     {
       title: '当前进度',
@@ -203,7 +209,7 @@ const OrderList: React.FC = () => {
                     }}
                   />
                 ),
-                onOk: () => handleUpdate(record, sendCode),
+                onOk: () => handleUpdate({ ...record, transferNo: sendCode }),
               });
             }}
           >
