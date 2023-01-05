@@ -53,9 +53,15 @@ declare namespace API {
     amount?: string;
     /** 用户id */
     appletUserId?: number;
+    /** 买方用户名称 */
+    nickname?: string;
     createTime?: string;
     /** 运费 */
     expressFee?: number;
+    /** 运单号 */
+    transferNo?: string;
+    /** 快递 */
+    transferDetail?: number;
     /** 完成时间 */
     finishTime?: string;
     id?: number;
