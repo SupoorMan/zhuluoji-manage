@@ -1,5 +1,3 @@
-// @ts-ignore
-/* eslint-disable */
 // API 更新时间：
 // API 唯一标识：
 import * as salesAfter from './salesAfter';
@@ -16,6 +14,10 @@ import * as signIn from './signIn';
 import * as manageUser from './manageUser';
 import * as banner from './banner';
 import * as livePreview from './livePreview';
+import * as orderConvert from './orderConvert';
+import * as activityProduct from './activityProduct';
+import * as activity from './activity';
+import * as home from './home';
 export default {
   salesAfter,
   notices,
@@ -31,4 +33,8 @@ export default {
   manageUser,
   banner,
   livePreview,
+  orderConvert,
+  activityProduct,
+  activity,
+  home,
 };

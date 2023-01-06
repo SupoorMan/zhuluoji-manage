@@ -1,4 +1,4 @@
-import { pageLivePreview, updateLivePreview } from '@/services/miniprogram/livePreview';
+import { updateActivity, pageActivity, getActDetail } from '@/services/miniprogram/activity';
 import { PlusOutlined } from '@ant-design/icons';
 import {
   ActionType,
@@ -7,17 +7,17 @@ import {
   ProFormColumnsType,
 } from '@ant-design/pro-components';
 import { PageContainer, ProDescriptions, ProTable } from '@ant-design/pro-components';
-import { Button, Drawer, Space, Tag, Image, message } from 'antd';
+import { Button, Drawer, Tag, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import EditModal from './components/EditModal';
 
 /**
  * @fields  需要更新状态的直播预告户
  */
-const handleRemove = async (field: API.LivePreview) => {
+const handleRemove = async (field: API.Activity) => {
   const hide = message.loading('正在更新');
   try {
-    await updateLivePreview({ ...field });
+    await updateActivity({ ...field });
     hide();
     message.success('更新成功');
     return true;
@@ -28,97 +28,41 @@ const handleRemove = async (field: API.LivePreview) => {
   }
 };
 
-const LivePreviewList: React.FC = () => {
+const ActivityList: React.FC = () => {
   const [createModalOpen, handleModalOpen] = useState<boolean>(false); // 新建窗口的弹窗
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.LivePreview>();
-  const columns: ProColumns<API.LivePreview>[] = [
+  const [currentRow, setCurrentRow] = useState<API.Activity>();
+  const columns: ProColumns<API.Activity>[] = [
     {
-      title: '直播封面',
-      dataIndex: 'images',
-      valueType: 'image',
-      hideInSearch: true,
+      title: '直播间',
+      dataIndex: 'sources',
+      width: 'md',
       formItemProps: {
-        rules: [{ required: true, message: '直播封面为必填项' }],
-      },
-      render: (_, record) => <Image src={record.images} width={130} height={80} />,
-    },
-    {
-      title: '主持人',
-      dataIndex: 'hoster',
-      formItemProps: {
-        rules: [{ required: true, message: '主持人为必填项' }],
-      },
-      render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
-        );
-      },
-    },
-    {
-      title: '直播间类型',
-      dataIndex: 'type',
-      hideInTable: true,
-      hideInDescriptions: true,
-      formItemProps: {
-        rules: [{ required: true, message: '直播间类型为必填项' }],
+        rules: [{ required: true, message: '直播间为必填项' }],
       },
       valueEnum: {
         0: {
-          text: '汀戴家具',
-          status: 'Default',
+          text: '酷酷的侏罗纪家居',
         },
         1: {
-          text: '酷酷的侏罗纪',
-          status: 'Processing',
+          text: '酷酷的侏罗纪家纺',
         },
       },
+      render: (_, record) => (
+        <Tag color={record.sources === 1 ? 'red' : 'blue'}>
+          {['酷酷的侏罗纪家居', '酷酷的侏罗纪家纺'][record.sources!]}
+        </Tag>
+      ),
     },
-    {
-      title: '直播链接',
-      dataIndex: 'links',
-      hideInSearch: true,
-      formItemProps: {
-        rules: [{ required: true, message: '直播链接为必填项' }],
-      },
-      render: (_, record) => {
-        return (
-          <Space>
-            {_}
-            <Tag color={record.type === 1 ? 'red' : 'blue'}>
-              {record?.type ? ['汀戴家具', '酷酷的侏罗纪'][record?.type] : '-'}
-            </Tag>
-          </Space>
-        );
-      },
-    },
+
     {
       title: '直播日期',
-      dataIndex: 'dates',
+      dataIndex: 'days',
       valueType: 'date',
       formItemProps: {
         rules: [{ required: true, message: '直播日期为必填项' }],
       },
-      width: 'md',
-    },
-    {
-      title: '直播时间',
-      dataIndex: 'stamps',
-      // hideInTable: true,
-      hideInSearch: true,
-      valueType: 'timeRange',
-      formItemProps: {
-        rules: [{ required: true, message: '直播时间为必填项' }],
-      },
-      render: (_, record) => record?.stamps,
       width: 'md',
     },
     {
@@ -129,14 +73,30 @@ const LivePreviewList: React.FC = () => {
       hideInForm: true,
     },
     {
+      title: '状态',
+      dataIndex: 'status',
+      hideInForm: true,
+      valueEnum: {
+        0: {
+          text: '关闭',
+          status: 'Default',
+        },
+        1: {
+          text: '开启',
+          status: 'Processing',
+        },
+      },
+    },
+    {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
         <a
           key="config"
-          onClick={() => {
-            setCurrentRow(record);
+          onClick={async () => {
+            const { data } = await getActDetail({ activityId: record?.id });
+            setCurrentRow({ ...record, list: data });
             handleModalOpen(true);
           }}
         >
@@ -151,14 +111,14 @@ const LivePreviewList: React.FC = () => {
             }
           }}
         >
-          {record.status === 1 ? '关闭' : '展示'}
+          {record.status === 1 ? '关闭' : '开启'}
         </a>,
       ],
     },
   ];
   return (
     <PageContainer>
-      <ProTable<API.LivePreview>
+      <ProTable<API.Activity>
         headerTitle="直播预告列表"
         actionRef={actionRef}
         rowKey="id"
@@ -168,14 +128,14 @@ const LivePreviewList: React.FC = () => {
           </Button>,
         ]}
         request={async (params) => {
-          const { data } = await pageLivePreview(params);
-          return { data: data?.records || [], success: true, total: data?.totle || 0 };
+          const { data } = await pageActivity(params);
+          return { data: data?.records || [], success: true, total: data?.total || 0 };
         }}
         pagination={false}
         columns={columns}
       />
       {createModalOpen && (
-        <EditModal<API.LivePreview>
+        <EditModal<API.Activity>
           title={`${currentRow ? `编辑` : `新建`} 直播预告`}
           width={700}
           open={createModalOpen}
@@ -192,7 +152,7 @@ const LivePreviewList: React.FC = () => {
             }
           }}
           current={currentRow}
-          columns={columns as ProFormColumnsType<API.LivePreview>[]}
+          columns={columns as ProFormColumnsType<API.Activity>[]}
         />
       )}
       <Drawer
@@ -205,7 +165,7 @@ const LivePreviewList: React.FC = () => {
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<API.LivePreview>
+          <ProDescriptions<API.Activity>
             column={1}
             title="直播预告详情"
             request={async () => ({
@@ -214,7 +174,7 @@ const LivePreviewList: React.FC = () => {
             params={{
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<API.LivePreview>[]}
+            columns={columns as ProDescriptionsItemProps<API.Activity>[]}
           />
         )}
       </Drawer>
@@ -222,4 +182,4 @@ const LivePreviewList: React.FC = () => {
   );
 };
 
-export default LivePreviewList;
+export default ActivityList;

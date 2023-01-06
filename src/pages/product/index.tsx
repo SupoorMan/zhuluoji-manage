@@ -1,4 +1,10 @@
-import { deleteProd, getProds, upDownProducts, updateProd } from '@/services/miniprogram/product';
+import {
+  deleteProd,
+  getProds,
+  upDownProducts,
+  updateProd,
+  getProdDetail,
+} from '@/services/miniprogram/product';
 import { PlusOutlined } from '@ant-design/icons';
 import {
   ActionType,
@@ -113,38 +119,17 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '价值',
-      dataIndex: 'integral',
-      valueType: 'money',
-      hideInSearch: true,
-      fieldProps: {
-        moneySymbol: false,
-        style: { width: '240px' },
-        addonAfter: '积分',
-        precision: 0,
-      },
-      render: (_) => <>{_}积分</>,
-      formItemProps: {
-        rules: [{ required: true, message: '商品积分为必填项' }],
-      },
-    },
-    {
       title: '剩余数量',
       dataIndex: 'totals',
       valueType: 'digit',
       hideInSearch: true,
+      width: 'md',
       formItemProps: {
         rules: [{ required: true, message: '剩余数量为必填项' }],
       },
       fieldProps: {
-        style: { width: '320px' },
         precision: 0,
       },
-    },
-    {
-      title: '规格',
-      dataIndex: 'amount',
-      hideInSearch: true,
     },
 
     {
@@ -215,14 +200,7 @@ const TableList: React.FC = () => {
         },
       },
     },
-    {
-      title: '星级',
-      dataIndex: 'starter',
-      valueType: 'rate',
-      hideInForm: true,
-      hideInTable: true,
-      hideInSearch: true,
-    },
+
     {
       title: '更新时间',
       hideInForm: true,
@@ -264,10 +242,12 @@ const TableList: React.FC = () => {
       render: (_, record) => [
         <a
           key="config"
-          onClick={() => {
-            handleModalOpen(true);
+          onClick={async () => {
+            const { data } = await getProdDetail({ productId: record.id });
+            console.log(data);
+            setCurrentRow(data);
             setShowDetail(false);
-            setCurrentRow(record);
+            handleModalOpen(true);
           }}
         >
           编辑

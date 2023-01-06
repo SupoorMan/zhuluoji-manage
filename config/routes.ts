@@ -47,24 +47,23 @@ export default [
     // ],
   },
   {
-    name: '商品',
+    name: '积分商品',
     icon: 'tags',
     path: '/product',
     component: './product',
   },
-
   {
     name: '订单',
     icon: 'profile',
     path: '/order',
     component: './order',
   },
-  {
-    name: '售后',
-    icon: 'ShoppingCart',
-    path: '/salesAfter',
-    component: './afterSales',
-  },
+  // {
+  //   name: '售后',
+  //   icon: 'ShoppingCart',
+  //   path: '/salesAfter',
+  //   component: './afterSales',
+  // },
   {
     name: '会员',
     icon: 'team',
@@ -80,8 +79,23 @@ export default [
   {
     name: '直播',
     icon: 'videoCamera',
-    path: '/video',
-    component: './video',
+    path: '/live',
+    routes: [
+      {
+        path: '/live',
+        redirect: '/live/priview',
+      },
+      {
+        path: '/live/priview',
+        name: '直播预告',
+        component: './LivePriview/priview',
+      },
+      {
+        path: '/live/product',
+        name: '直播商品',
+        component: './LivePriview/product',
+      },
+    ],
   },
   {
     name: '配置',
@@ -89,6 +103,13 @@ export default [
     path: '/setting',
     access: 'canAdmin',
     component: './setting',
+  },
+  {
+    name: '侏罗纪的家',
+    icon: 'home',
+    path: '/home',
+    // access: 'canAdmin',
+    component: './home',
   },
   {
     path: '/',

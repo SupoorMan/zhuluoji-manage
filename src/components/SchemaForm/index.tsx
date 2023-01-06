@@ -22,6 +22,11 @@ const Index = <T extends { [key: string]: any }>({
     colProps: { span: 12 },
     rowProps: { gutter: [24, 0] },
     grid: layoutType !== 'LightFilter' && layoutType !== 'QueryFilter',
+    modalProps: {
+      bodyStyle: {
+        border: `1rpx solid #f9f9f9`,
+      },
+    },
     onFinish: async (values: T) => onFinish(values),
     columns: (layoutType === 'StepsForm' ? [columns] : columns) as any,
     ...otherConfig,

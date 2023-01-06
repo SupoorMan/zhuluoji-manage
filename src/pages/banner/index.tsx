@@ -32,9 +32,9 @@ const handleRemove = async (fields: API.Banner) => {
 };
 
 const ConfigList: React.FC = () => {
-  const [createModalOpen, handleModalOpen] = useState<boolean>(false); // 新建窗口的弹窗
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
+  const [createModalOpen, handleModalOpen] = useState<boolean>(false); // 新建窗口的弹窗
   const [currentRow, setCurrentRow] = useState<API.Banner>();
   const columns: ProColumns<API.Banner>[] = [
     {
@@ -53,6 +53,16 @@ const ConfigList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: '类型',
+      dataIndex: 'type',
+      // hideInSearch: true,
+      valueType: 'select',
+      valueEnum: {
+        0: { text: '首页' },
+        1: { text: '直播预告' },
+      },
+    },
+    {
       title: '排序',
       dataIndex: 'sorts',
       valueType: 'digit',
@@ -66,22 +76,6 @@ const ConfigList: React.FC = () => {
         rules: [{ required: true, message: '排序为必填项' }],
       },
     },
-
-    // {
-    //   title: '状态',
-    //   dataIndex: 'state',
-    //   hideInForm: true,
-    //   valueEnum: {
-    //     0: {
-    //       text: '禁用',
-    //       status: 'Default',
-    //     },
-    //     1: {
-    //       text: '有效',
-    //       status: 'Processing',
-    //     },
-    //   },
-    // },
     {
       title: '更新时间',
       dataIndex: 'createTime',
@@ -170,7 +164,7 @@ const ConfigList: React.FC = () => {
         columns={columns as ProFormColumnsType<API.Banner>[]}
       />
       <Drawer
-        width={400}
+        width={500}
         open={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
@@ -183,7 +177,7 @@ const ConfigList: React.FC = () => {
             column={1}
             title="轮播详情"
             dataSource={currentRow}
-            columns={columns as ProDescriptionsItemProps<API.Banner>[]}
+            columns={columns.slice(0, columns.length - 1) as ProDescriptionsItemProps<API.Banner>[]}
           />
         )}
       </Drawer>

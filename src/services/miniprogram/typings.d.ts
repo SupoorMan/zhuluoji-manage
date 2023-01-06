@@ -15,10 +15,33 @@ declare namespace API {
     id?: number;
     /** 跳转地址 */
     links?: string;
+    /** 轮播类型 0.首页 1.直播预告*/
+    type?: string;
     /** 排序 */
     sorts?: number;
     /** 路径 */
     url?: string;
+  };
+
+  type Home = {
+    /** 品牌 */
+    brands?: string;
+    createTime?: string;
+    id?: number;
+    /** roomtour图片或产品图片 */
+    images?: string;
+    /** 简介 */
+    introduction?: string;
+    /** 名称 */
+    names?: string;
+    /** 状态: 0.未激活 1.激活 */
+    status?: number;
+    /** 上级id */
+    topId?: number;
+    /** 所属类型(填写) */
+    topType?: string;
+    /** 价值 */
+    values?: string;
   };
 
   type ProdDetailParams = {
@@ -31,6 +54,29 @@ declare namespace API {
     id?: number;
   };
 
+  type ProdIdParams = {
+    /** productId */
+    productId?: number;
+  };
+  type TopIdParams = {
+    /** topId */
+    topId?: number;
+  };
+  type ActivityIdParams = {
+    /** activityId */
+    activityId?: number;
+  };
+
+  type pageHomeParams = {
+    topId?: string;
+    status?: number;
+  } & PageParams;
+
+  type pageActivityParams = {
+    days?: number;
+    sources?: string;
+  } & PageParams;
+
   type ManageUser = {
     createTime?: string;
     id?: number;
@@ -42,12 +88,28 @@ declare namespace API {
     state?: number;
     updateTime?: string;
   };
+  type ProductSpecs = {
+    /** 颜色 */
+    colors?: string;
+    id?: number;
+    /** 积分 */
+    integral?: string;
+    /** 价格 */
+    price?: string;
+    /** 积分商品id */
+    productId?: number;
+    /** 尺寸 */
+    sizes?: string;
+    /** 类型 0: 积分商品；1. 直播商品 */
+    type?: string;
+  };
   type LoginParams = {
     /** 手机号 */
     phone?: string;
     /** 密码 */
     pwd?: string;
   };
+
   type Order = {
     /** 购买规格/数量 */
     amount?: string;
@@ -82,12 +144,33 @@ declare namespace API {
     updateTime?: string;
   };
 
+  type OrderConvert = {
+    /** 小程序用户id */
+    appletUserId?: number;
+    /** 消费价格 */
+    costs?: string;
+    createTime?: string;
+    id?: number;
+    /** 订单图片证明 */
+    images?: string;
+    /** 订单号 */
+    orderNo?: string;
+    /** 备注 */
+    remark?: string;
+    /** 审核状态: 0.未通过 1.通过 */
+    status?: number;
+    /** 类型: 0.微信 1.淘宝 2.小红书 3.抖音 4.其他 */
+    type?: number;
+  };
+
   type IntegralProduct = {
     /** 详情图文内容 */
     details?: string;
     id?: number;
     /** 价值积分 */
     integral?: number;
+    /** 规格列表 */
+    list?: ProductAmount[];
     /** 简介 */
     introduction?: string;
     /** 商品图片 */
@@ -115,6 +198,64 @@ declare namespace API {
     updateTime?: string;
     createTime?: string;
   };
+
+  type ProductAmount = {
+    /** 颜色 */
+    colors?: string;
+    id?: number;
+    /** 积分 */
+    integral?: string;
+    /** 价格 */
+    price?: string;
+    /** 积分商品id */
+    productId?: number;
+    /** 尺寸 */
+    sizes?: string;
+  };
+  type ActivityProduct = {
+    createTime?: string;
+    /** 说明,详情 */
+    details?: string;
+    id?: number;
+    /** 商品图片 */
+    images?: string;
+    /** 商品名称 */
+    productName?: string;
+    /** 类型: 0.商品 1.赠品 */
+    type?: number;
+    /** 规格列表*/
+    list?: ProductSpecs[];
+    /** 商品类型: 0.玻璃餐具 1.睡衣浴袍 2.床上用品 3.家具装点 */
+    topType?: number | string;
+  };
+  type Activity = {
+    createTime?: string;
+    /** 活动日期 */
+    days?: string;
+    id?: number;
+    /** 来源: 0.家纺直播 1.家具直播 */
+    sources?: number;
+    /** 商品列表*/
+    list?: ActivityDetail[];
+    /** 状态: 0.关闭 1.开启 */
+    status?: number;
+    /** 类型: 0.直播预告  */
+    type?: number;
+  };
+  type ActivityDetail = {
+    /** 活动赠品id */
+    activityGiftId?: number;
+    /** 活动id */
+    activityId?: number;
+    /** 活动商品id */
+    activityProductId?: number;
+    productName?: string;
+    createTime?: string;
+    id?: number;
+    /** 其他说明 */
+    otherMsg?: string;
+  };
+
   type LivePreview = {
     createTime?: string;
     /**说明+简介 */
@@ -141,6 +282,7 @@ declare namespace API {
     /** 类型: 0.汀戴家具 1.酷酷的侏罗纪 */
     type?: number;
   };
+
   type ListSignInParams = {
     /** 时间字符串(yyyy-MM-dd) */
     date: string;
@@ -150,10 +292,20 @@ declare namespace API {
     /** key */
     key?: string;
   };
+
   type pageLiveParams = {
     /** 小程序用户id */
     appletUserId?: number;
     /** 通知类型: 0.站内 1.系统 2.直播预告 3.活动消息 4.订单物流 5.等级 6.积分 */
+    type?: number;
+  } & PageParams;
+
+  type pageConvertParams = {
+    /** 小程序用户id */
+    appletUserId?: number;
+    /** 审核状态: 0.未通过 1.通过 */
+    status?: number;
+    /** 类型: 0.微信 1.淘宝 2.小红书 3.抖音 4.其他 */
     type?: number;
   } & PageParams;
 
@@ -162,6 +314,10 @@ declare namespace API {
     appletUserId?: number;
     /** 通知类型: 0.站内 1.系统 2.直播预告 3.活动消息 4.订单物流 5.等级 6.积分 */
     interface?: number;
+  } & PageParams;
+
+  type pageActProdParams = {
+    productName?: string;
   } & PageParams;
 
   type PageUserInfoParams = {
@@ -266,14 +422,24 @@ declare namespace API {
     receiver?: string;
     updateTime?: string;
   };
+
   type UserParams = {
     phone?: string;
   } & PageParams;
+
   type CommonResult = {
     /** 响应码: 200.成功 500.错误 1000以上.失败 */
     code?: number;
     /** 返回数据 */
     data?: Record<string, any>;
+    /** 响应消息 */
+    msg?: string;
+  };
+  type ListResult = {
+    /** 响应码: 200.成功 500.错误 1000以上.失败 */
+    code?: number;
+    /** 返回数据 */
+    data?: T[];
     /** 响应消息 */
     msg?: string;
   };

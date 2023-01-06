@@ -89,6 +89,71 @@ const CreateTeamModal = <T extends API.IntegralProduct>(props: Iprops<T>) => {
       }
     }
   };
+  /**
+   * @name proColumns 规格Columns
+   *
+   */
+  const amoutColumns: ProFormColumnsType<{
+    sizes: string;
+    colors: number;
+    integral: number;
+    id: string;
+  }> = {
+    title: '规格',
+    valueType: 'formList',
+    dataIndex: 'list',
+    colProps: { md: 24 },
+    initialValue: [{ sizes: '', colors: '', integral: '', id: '' }],
+    fieldProps: {
+      copyIconProps: false,
+      creatorButtonProps: {},
+    },
+    formItemProps: {
+      rules: [{ required: true, message: '请输入价值' }],
+      style: {
+        marginBottom: 10,
+      },
+    },
+    rowProps: { gutter: 0 },
+    columns: [
+      {
+        valueType: 'group',
+        width: 'md',
+        colProps: { md: 24 },
+        rowProps: { gutter: [20, 0] },
+        columns: [
+          {
+            dataIndex: 'sizes',
+            colProps: { span: 8 },
+            fieldProps: {
+              placeholder: '尺寸',
+            },
+          },
+          {
+            colProps: { span: 8 },
+            width: 'md',
+            dataIndex: 'colors',
+            fieldProps: {
+              placeholder: '颜色',
+            },
+          },
+          {
+            colProps: { span: 8 },
+            width: 'md',
+            dataIndex: 'integral',
+            formItemProps: {
+              rules: [{ required: true, message: '请输入商品价值' }],
+            },
+            fieldProps: {
+              addonAfter: '积分',
+              placeholder: '价值',
+            },
+          },
+        ],
+      },
+    ],
+  };
+
   return (
     <SchemaForm<T>
       formRef={formRef}
@@ -141,70 +206,78 @@ const CreateTeamModal = <T extends API.IntegralProduct>(props: Iprops<T>) => {
         }
       }}
       columns={
-        columns.map((n) => {
-          if (n.dataIndex === 'productImage') {
-            return {
-              ...n,
-              // width: 'md',
-              colProps: { span: 24 },
-              renderFormItem: () => {
-                return (
-                  <>
-                    <ProFormUploadButton
-                      title="上传图片"
-                      listType="picture-card"
-                      colProps={{ span: 24 }}
-                      max={5}
-                      fileList={fileList}
-                      fieldProps={{
-                        onPreview: (file) => {
-                          if (file && file?.url) {
-                            setPriviewSrc(file?.url);
-                            setVisible(true);
-                          }
-                        },
-                        customRequest: (options) => handleUploadFile(options),
-                        onRemove: async (file: UploadFile<any>) => {
-                          if (file?.url && (await handleRemove(file.url))) {
-                            const files = fileList.filter((n) => n.url !== file.url);
-                            if (!files || files.length === 0) {
-                              formRef.current?.setFieldValue('productImage', '');
+        [
+          ...columns.map((n) => {
+            if (n.dataIndex === 'productImage') {
+              return {
+                ...n,
+                // width: 'md',
+                colProps: { span: 24 },
+                formItemProps: {
+                  style: {
+                    marginBottom: 0,
+                  },
+                },
+                renderFormItem: () => {
+                  return (
+                    <>
+                      <ProFormUploadButton
+                        title="上传图片"
+                        listType="picture-card"
+                        colProps={{ span: 24 }}
+                        max={5}
+                        fileList={fileList}
+                        fieldProps={{
+                          onPreview: (file) => {
+                            if (file && file?.url) {
+                              setPriviewSrc(file?.url);
+                              setVisible(true);
                             }
-                          }
-                          return true;
-                        },
-                      }}
-                      onChange={({ fileList: newFileList }) => setFileList(newFileList)}
-                    />
-                    <Image
-                      src={priviewSrc}
-                      style={{ display: 'none' }}
-                      preview={{
-                        visible,
-                        src: priviewSrc,
-                        onVisibleChange: (value) => {
-                          setVisible(value);
-                        },
-                      }}
-                    />
-                  </>
-                );
-              },
-            };
-          } else if (n.dataIndex === 'introduction') {
-            return { ...n, colProps: 24 };
-          } else if (n.dataIndex === 'recommend' || n.dataIndex === 'purchaseLimit') {
-            return {
-              ...n,
-              width: 'md',
-              colProps: {
-                xs: 24,
-                md: 6,
-              },
-            };
-          }
-          return n;
-        }) as ProFormColumnsType<T>[]
+                          },
+                          customRequest: (options) => handleUploadFile(options),
+                          onRemove: async (file: UploadFile<any>) => {
+                            if (file?.url && (await handleRemove(file.url))) {
+                              const files = fileList.filter((n) => n.url !== file.url);
+                              if (!files || files.length === 0) {
+                                formRef.current?.setFieldValue('productImage', '');
+                              }
+                            }
+                            return true;
+                          },
+                        }}
+                        onChange={({ fileList: newFileList }) => setFileList(newFileList)}
+                      />
+                      <Image
+                        src={priviewSrc}
+                        style={{ display: 'none' }}
+                        preview={{
+                          visible,
+                          src: priviewSrc,
+                          onVisibleChange: (value) => {
+                            setVisible(value);
+                          },
+                        }}
+                      />
+                    </>
+                  );
+                },
+              };
+            } else if (n.dataIndex === 'introduction') {
+              return { ...n, colProps: 24 };
+            } else if (n.dataIndex === 'recommend' || n.dataIndex === 'purchaseLimit') {
+              return {
+                ...n,
+                width: 'md',
+                colProps: {
+                  xs: 24,
+                  md: 6,
+                },
+              };
+            }
+            return n;
+          }),
+          amoutColumns,
+        ] as ProFormColumnsType<T>[]
       }
       {...otherConfig}
     />

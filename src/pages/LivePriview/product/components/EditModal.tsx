@@ -7,10 +7,9 @@ import {
 } from '@ant-design/pro-components';
 import SchemaForm from '@/components/SchemaForm';
 import { message, Image, UploadFile } from 'antd';
-import { addLivePreview, updateLivePreview } from '@/services/miniprogram/livePreview';
 import { deleteFile, uploadFile } from '@/services/miniprogram/file';
 import { UploadRequestOption } from 'rc-upload/lib/interface';
-import { getProds } from '@/services/miniprogram/product';
+import { addActProd, updateActProd } from '@/services/miniprogram/activityProduct';
 
 interface Iprops<T> {
   title: string;
@@ -61,7 +60,6 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
   const { title, current, onOpenChange, columns, onFinish, ...otherConfig } = props;
   const formRef = useRef<ProFormInstance>();
   const [visible, setVisible] = useState<boolean>(false);
-  const [prods, setProds] = useState<API.IntegralProduct[]>();
   const [priviewSrc, setPriviewSrc] = useState<string>('');
   const [fileList, setFileList] = useState<UploadFile[]>();
   useEffect(() => {
@@ -80,7 +78,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
   const handleUploadFile = async (options: UploadRequestOption<any>) => {
     const file = options.file as File;
     if (file) {
-      const result = await uploadFile({ area: '直播预告' }, {}, file);
+      const result = await uploadFile({ area: '直播商品' }, {}, file);
       if (result && result.data) {
         const file: UploadFile = {
           uid: nanoid(),
@@ -94,81 +92,68 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
     }
   };
   /**
-   * @name proColumns 商品信息Columns
+   * @name proColumns 规格Columns
    *
    */
-  const proColumns: ProFormColumnsType<{ name: string; price: number; count: number }> = {
-    title: '直播商品',
+  const amoutColumns: ProFormColumnsType<{
+    sizes: string;
+    colors: string;
+    price: number;
+    id: number;
+  }> = {
+    title: '赠品规格',
     valueType: 'formList',
-    dataIndex: 'products',
+    dataIndex: 'list',
     colProps: { md: 24 },
-    initialValue: [{ name: '', price: '', count: '' }],
+    initialValue: [{ sizes: '', colors: '', price: '', id: '' }],
     fieldProps: {
       copyIconProps: false,
       creatorButtonProps: {},
     },
+    formItemProps: {
+      rules: [{ required: true, message: '至少有一个商品规格' }],
+      style: {
+        marginBottom: 10,
+      },
+    },
+    rowProps: { gutter: 0 },
     columns: [
       {
-        dataIndex: 'sourceBase',
         valueType: 'group',
         width: 'md',
         colProps: { md: 24 },
-        rowProps: { gutter: [24, 24] },
+        rowProps: { gutter: [20, 0] },
         columns: [
           {
-            title: '商品名称',
-            dataIndex: 'name',
-            valueType: 'select',
+            dataIndex: 'sizes',
+            colProps: { span: 8 },
             fieldProps: {
-              showSearch: true,
-              labelInValue: true,
-              placeholder: '请输入商品名称搜索积分商品库',
-              fieldNames: {
-                label: 'productName',
-                value: 'productName',
-              },
-              onSearch: async (value?: string) => {
-                const result = await getProds({ name: value, pageSize: 30, current: 1 });
-                setProds(result.data?.records);
-                return result.data?.records;
-              },
-              options: prods,
+              placeholder: '名称',
             },
-            colProps: { span: 12 },
           },
           {
-            title: '商品数量',
-            colProps: { span: 6 },
+            dataIndex: 'colors',
+            colProps: { span: 8 },
+            fieldProps: {
+              placeholder: '优惠',
+            },
+          },
+          {
+            colProps: { span: 8 },
             width: 'md',
-            dataIndex: 'count',
-            valueType: 'digit',
-          },
-          {
-            valueType: 'dependency',
-            name: ['name'],
-            columns: ({ name }) => {
-              if (name) {
-                return [
-                  {
-                    title: '商品价格',
-                    colProps: { span: 6 },
-                    width: 'md',
-                    dataIndex: 'price',
-                    fieldProps: {
-                      addonAfter: '积分',
-                    },
-                    initialValue: name?.integral,
-                  },
-                ];
-              }
-              return [];
+            dataIndex: 'price',
+            valueType: 'money',
+            formItemProps: {
+              rules: [{ required: true, message: '请输入到手价' }],
+            },
+            fieldProps: {
+              placeholder: '到手价',
             },
           },
         ],
       },
     ],
   };
-
   return (
     <SchemaForm<T>
       formRef={formRef}
@@ -180,45 +165,20 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
           if (current) {
             formRef.current?.setFieldsValue({
               ...current,
-              stamps: current.stamps.split('-'),
               type: `${current.type}`,
-              products: current.products
-                ? JSON.parse(current.products)
-                : { name: '', price: '', count: '' },
+              topType: `${current.topType}`,
             });
           }
         } else {
           formRef.current?.resetFields();
         }
       }}
-      layoutType="DrawerForm"
+      layoutType="ModalForm"
       onFinish={async (values) => {
-        const newProds = values.products.map((n: any) =>
-          typeof n.name === 'object' ? { ...n, name: n.name.productName } : { ...n },
-        );
         if (current) {
-          onFinish(
-            await handleSubmit(
-              {
-                ...current,
-                ...values,
-                stamps: values.stamps.join('-'),
-                products: JSON.stringify(newProds),
-              },
-              updateLivePreview,
-            ),
-          );
+          onFinish(await handleSubmit({ ...current, ...values }, updateActProd));
         } else {
-          onFinish(
-            await handleSubmit(
-              {
-                ...values,
-                stamps: values.stamps.join('-'),
-                products: JSON.stringify(newProds),
-              },
-              addLivePreview,
-            ),
-          );
+          onFinish(await handleSubmit({ ...values }, addActProd));
         }
       }}
       columns={
@@ -232,7 +192,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
                   return (
                     <>
                       <ProFormUploadButton
-                        title="上传封面"
+                        title="上传图片"
                         listType="picture-card"
                         max={1}
                         fileList={fileList}
@@ -268,7 +228,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
                   );
                 },
               };
-            } else if (n.dataIndex === 'links' || n.dataIndex === 'products') {
+            } else if (n.dataIndex === 'details') {
               return {
                 ...n,
                 colProps: 24,
@@ -276,7 +236,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
             }
             return n;
           }),
-          proColumns,
+          amoutColumns,
         ] as any
       }
       {...otherConfig}
