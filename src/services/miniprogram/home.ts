@@ -1,7 +1,8 @@
 import { request } from '@umijs/max';
 
 /** 新增侏罗纪的家 POST /zhuluojiHome/add */
-export async function addHome(body: API.Home, options?: { [key: string]: any }) {
+export async function addHome(body: API.Home | API.Home[], options?: { [key: string]: any }) {
+  console.log(body);
   return request<API.CommonResult>('/zhuluojiHome/add', {
     method: 'POST',
     headers: {
@@ -12,9 +13,9 @@ export async function addHome(body: API.Home, options?: { [key: string]: any }) 
   });
 }
 
-/** 查询侏罗纪的家详情 GET /zhuluojiHome/get */
-export async function getHomeDetail(params: API.TopIdParams, options?: { [key: string]: any }) {
-  return request<API.CommonResult>('/zhuluojiHome/get', {
+/** 查询侏罗纪的家详情 GET /zhuluojiHome/detail */
+export async function getHomeDetail(params: API.IdParams, options?: { [key: string]: any }) {
+  return request<API.ListResult>('/zhuluojiHome/detail', {
     method: 'GET',
     params: {
       ...params,
@@ -35,7 +36,10 @@ export async function pageHome(params: API.pageHomeParams, options?: { [key: str
 }
 
 /** 更新侏罗纪的家 POST /zhuluojiHome/update */
-export async function updateHome(body: API.Home, options?: { [key: string]: any }) {
+export async function updateHome(
+  body: { deleteList?: string[]; home: API.Home[] },
+  options?: { [key: string]: any },
+) {
   return request<API.CommonResult>('/zhuluojiHome/update', {
     method: 'POST',
     headers: {

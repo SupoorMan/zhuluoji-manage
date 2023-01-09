@@ -1,28 +1,38 @@
+import { deleteFile, uploadFile } from '@/services/miniprogram/file';
 import { updateHome, pageHome, getHomeDetail } from '@/services/miniprogram/home';
 import { PlusOutlined } from '@ant-design/icons';
-import {
-  ActionType,
-  ProColumns,
-  ProDescriptionsItemProps,
-  ProFormColumnsType,
-} from '@ant-design/pro-components';
-import { PageContainer, ProDescriptions, ProTable } from '@ant-design/pro-components';
-import { Button, Drawer, message, Tabs } from 'antd';
+import { ActionType, ProColumns, ProFormColumnsType } from '@ant-design/pro-components';
+import { PageContainer, ProTable } from '@ant-design/pro-components';
+import { Button, message, Upload } from 'antd';
+import { RcFile } from 'antd/es/upload/interface';
+import { UploadRequestOption } from 'rc-upload/lib/interface';
 import React, { useRef, useState } from 'react';
-import EditModal from './components/EditModal';
+import EditModal from './components/EditHome';
+import PhotoShareDrawer from './components/EditModal';
 /**@description 更新家的状态
  * @fields 家的信息
  */
 const handleUpdata = async (fields: API.Home) => {
   const hide = message.loading('更新中');
   try {
-    await updateHome({ ...fields });
+    await updateHome({ home: [{ ...fields }] });
     hide();
-    message.success('更新售后处理进度成功');
+    message.success('更新状态成功');
     return true;
   } catch (error) {
     hide();
-    message.success('更新售后处理进度失败，请稍后重试');
+    message.success('更新状态失败，请稍后重试');
+    return false;
+  }
+};
+/**删除文件
+ * @filePath 文件地址
+ */
+const handleRemove = async (filePath: string) => {
+  try {
+    await deleteFile({ file: filePath });
+    return true;
+  } catch (error) {
     return false;
   }
 };
@@ -31,7 +41,24 @@ const HomeList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [createModalOpen, handleModalOpen] = useState<boolean>(false); // 新建窗口的弹窗
   const [currentRow, setCurrentRow] = useState<API.Home>();
+  const [curPhotos, setCurPhotos] = useState<API.Home[]>();
   const actionRef = useRef<ActionType>();
+
+  // 上传视频
+  const handleUploadFile = async (options: UploadRequestOption<any>, record: API.Home) => {
+    const file = options.file as RcFile;
+    if (file) {
+      const result = await uploadFile({ area: '侏罗纪的家' }, {}, file);
+      if (result && result.data) {
+        const { code } = await updateHome({ home: [{ ...record, images: result.data }] });
+        if (code === 200) {
+          return true;
+        }
+      }
+      message.error(result.msg);
+      return false;
+    }
+  };
   const columns: ProColumns<API.Home>[] = [
     {
       title: '名称',
@@ -49,13 +76,14 @@ const HomeList: React.FC = () => {
     {
       title: 'roomtour',
       dataIndex: 'images',
-      hideInTable: true,
+      // hideInTable: true,
       hideInSearch: true,
+      hideInForm: true,
       formItemProps: {
         rules: [{ required: true, message: '请上传roomtour视频文件' }],
       },
       render: (_, record) => {
-        return record.images ? <video src={record.images}></video> : '-';
+        return record.images ? <video src={record.images} width="120" height="80"></video> : '-';
       },
     },
     {
@@ -85,12 +113,37 @@ const HomeList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
+        <Upload
+          key="upVideo"
+          accept="video/*"
+          maxCount={1}
+          showUploadList={false}
+          customRequest={async (options) => {
+            if (record.images) {
+              await handleRemove(record.images);
+            }
+
+            if (await handleUploadFile(options, record)) actionRef.current?.reload();
+          }}
+        >
+          <a>上传视频</a>
+        </Upload>,
+        <a
+          key="photo"
+          onClick={async () => {
+            const { data = [] } = await getHomeDetail({ id: record?.id });
+            setCurPhotos([...data]);
+            setCurrentRow({ ...record });
+            setShowDetail(true);
+          }}
+        >
+          图片配置
+        </a>,
         <a
           key="config"
           onClick={async () => {
-            const { data } = await getHomeDetail({ topId: record?.id });
-            setCurrentRow({ ...record, list: data });
-            setShowDetail(true);
+            setCurrentRow(record);
+            handleModalOpen(true);
           }}
         >
           编辑
@@ -127,14 +180,15 @@ const HomeList: React.FC = () => {
           </Button>,
         ]}
         request={async (params) => {
-          const { data } = await pageHome({ ...params, topId: '-1' });
+          const { data } = await pageHome({ ...params, topId: -1 });
           return { data: data?.records || 0, success: true, total: data?.total || 0 };
         }}
         columns={columns}
       />
-      <EditModal<API.Banner>
+      <EditModal
+        key="editM"
         title={`${currentRow ? `编辑` : `新建`} 侏罗纪的家`}
-        width={720}
+        width={400}
         open={createModalOpen}
         onFinish={(success: boolean) => {
           if (success) {
@@ -149,37 +203,32 @@ const HomeList: React.FC = () => {
           }
         }}
         current={currentRow}
-        columns={columns as ProFormColumnsType<API.Banner>[]}
+        columns={columns as ProFormColumnsType<API.Home>[]}
       />
-      <Drawer
-        width={700}
-        open={showDetail}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
-        closable={false}
-      >
-        <Tabs
-          items={[
-            { key: '0', label: 'roomtour' },
-            { key: '1', label: '图纸分享' },
-          ]}
+      {showDetail && curPhotos && (
+        <PhotoShareDrawer
+          key="photoShareD"
+          title={currentRow?.names + '图片配置'}
+          open={showDetail}
+          current={currentRow}
+          photoList={curPhotos}
+          onFinish={(success: boolean) => {
+            if (success) {
+              setShowDetail(false);
+              setCurrentRow(undefined);
+              setCurPhotos(undefined);
+              actionRef.current?.reload();
+            }
+          }}
+          onOpenChange={function (open: boolean): void {
+            setShowDetail(open);
+            if (!open) {
+              setCurrentRow(undefined);
+              setCurPhotos(undefined);
+            }
+          }}
         />
-        {currentRow?.id && (
-          <ProDescriptions<API.Home>
-            column={1}
-            title={currentRow?.id}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.id,
-            }}
-            columns={columns as ProDescriptionsItemProps<API.Home>[]}
-          />
-        )}
-      </Drawer>
+      )}
     </PageContainer>
   );
 };

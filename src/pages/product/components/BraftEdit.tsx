@@ -14,10 +14,10 @@ const RichEditor = (props: { detail: string; onChange: (val: string) => void }) 
     props.onChange(editorState?.toHTML());
   }, [editorState]);
 
-  // const submitContent = async () => {
-  //   const htmlContent = editorState?.toHTML();
-  //   console.log(htmlContent);
-  // };
+  const submitContent = async () => {
+    const htmlContent = editorState?.toHTML();
+    console.log(htmlContent);
+  };
   // 上传图片到服务器
   const myUploadFn = async (params: {
     file: File;
@@ -57,13 +57,15 @@ const RichEditor = (props: { detail: string; onChange: (val: string) => void }) 
     }
   };
   return (
-    <BraftEditor
-      excludeControls={['code', 'blockquote', 'emoji', 'link']}
-      value={editorState}
-      media={{ uploadFn: myUploadFn }}
-      onChange={setEditorState}
-      // onSave={submitContent}
-    />
+    <>
+      <BraftEditor
+        excludeControls={['code', 'blockquote', 'emoji', 'link']}
+        value={editorState}
+        media={{ uploadFn: myUploadFn }}
+        onChange={setEditorState}
+        onSave={submitContent}
+      />
+    </>
   );
 };
 

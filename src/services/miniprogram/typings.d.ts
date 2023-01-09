@@ -24,6 +24,8 @@ declare namespace API {
   };
 
   type Home = {
+    // 图片分享列表
+    list?: Home[];
     /** 品牌 */
     brands?: string;
     createTime?: string;
@@ -68,7 +70,7 @@ declare namespace API {
   };
 
   type pageHomeParams = {
-    topId?: string;
+    topId?: number;
     status?: number;
   } & PageParams;
 
