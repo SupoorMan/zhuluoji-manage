@@ -99,7 +99,7 @@ const TableList: React.FC = () => {
         <a
           key="config"
           onClick={async () => {
-            const { data } = await listProdSpecs({ productId: record?.id });
+            const { data } = await listProdSpecs({ productId: record?.id, type: 1 });
             setShowDetail(false);
             handleModalOpen(true);
             setCurrentRow({ ...record, list: data || [] });

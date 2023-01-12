@@ -131,23 +131,24 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
               placeholder: '名称',
             },
           },
-          {
-            dataIndex: 'colors',
-            colProps: { span: 8 },
-            fieldProps: {
-              placeholder: '优惠',
-            },
-          },
+          // {
+          //   dataIndex: 'colors',
+          //   colProps: { span: 8 },
+          //   fieldProps: {
+          //     placeholder: '优惠',
+          //   },
+          // },
           {
             colProps: { span: 8 },
             width: 'md',
             dataIndex: 'price',
             valueType: 'money',
             formItemProps: {
-              rules: [{ required: true, message: '请输入到手价' }],
+              rules: [{ required: true, message: '请输入原价' }],
             },
             fieldProps: {
-              placeholder: '到手价',
+              addonBefore: '原价',
+              placeholder: '原价',
             },
           },
         ],
@@ -171,6 +172,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
           }
         } else {
           formRef.current?.resetFields();
+          setFileList(undefined);
         }
       }}
       layoutType="ModalForm"

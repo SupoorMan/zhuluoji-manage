@@ -19,7 +19,7 @@ interface Iprops<T> {
  * @param fields 用户信息
  */
 const handleSubmit = async (
-  fields: API.Activity,
+  fields: API.Activity & { deleteList?: number[] },
   backFn: (arg: any) => Promise<API.CommonResult>,
 ) => {
   const hide = message.loading('正在' + (fields?.id ? '添加' : '更新'));
@@ -46,6 +46,7 @@ const CreateTeamModal = <T extends API.Activity>(props: Iprops<T>) => {
   const { title, current, onOpenChange, columns, onFinish, ...otherConfig } = props;
   const formRef = useRef<ProFormInstance>();
   const [prods, setProds] = useState<API.ActivityProduct[]>();
+  const [deletids, setDeletids] = useState<number[]>([]);
   /**
    * @name proColumns 商品信息Columns
    *
@@ -63,17 +64,37 @@ const CreateTeamModal = <T extends API.Activity>(props: Iprops<T>) => {
     fieldProps: {
       copyIconProps: false,
       creatorButtonProps: {},
+      itemRender: ({ listDom, action }: any, { record }: any) => {
+        return (
+          <Space align="start">
+            {listDom}
+            <a
+              onClick={() => {
+                if (record.id) {
+                  setDeletids([...deletids, record.id]);
+                }
+              }}
+            >
+              {action}
+            </a>
+          </Space>
+        );
+      },
     },
+    rowProps: { gutter: [24, 24] },
     columns: [
       {
         valueType: 'group',
         width: 'md',
         colProps: { md: 24 },
-        rowProps: { gutter: [24, 24] },
+        rowProps: { gutter: [24, 0] },
         columns: [
           {
             dataIndex: 'activityProductId',
             valueType: 'select',
+            formItemProps: {
+              rules: [{ required: true, message: '请选择直播商品' }],
+            },
             fieldProps: {
               showSearch: true,
               placeholder: '请输入商品名称搜索直播商品库',
@@ -88,7 +109,19 @@ const CreateTeamModal = <T extends API.Activity>(props: Iprops<T>) => {
               },
               options: prods,
             },
-            colProps: { span: 8 },
+            colProps: { span: 12 },
+          },
+          {
+            colProps: { span: 12 },
+            width: 'md',
+            dataIndex: 'stamps',
+            valueType: 'timeRange',
+            formItemProps: {
+              rules: [{ required: true, message: '请选择直播时间段' }],
+            },
+            fieldProps: {
+              placeholder: ['直播开始时间', '直播结束时间'],
+            },
           },
           {
             colProps: { span: 8 },
@@ -109,9 +142,15 @@ const CreateTeamModal = <T extends API.Activity>(props: Iprops<T>) => {
                           value: 'id',
                         },
                       },
+                      formItemProps: {
+                        rules: [{ required: true, message: '请选择规格' }],
+                      },
                       proFieldProps: {
                         request: async () => {
-                          const result = await listProdSpecs({ productId: activityProductId });
+                          const result = await listProdSpecs({
+                            productId: activityProductId,
+                            type: 1,
+                          });
                           return result.data;
                         },
                       },
@@ -127,14 +166,29 @@ const CreateTeamModal = <T extends API.Activity>(props: Iprops<T>) => {
               if (activityGiftId) {
                 return [
                   {
-                    colProps: { span: 6 },
+                    colProps: { span: 8 },
                     width: 'md',
                     dataIndex: 'price',
                     valueType: 'money',
                     fieldProps: {
-                      placeholder: '到手价',
+                      addonBefore: '原价',
+                      disabled: true,
+                      // placeholder: '到手价',
                     },
                     initialValue: activityGiftId?.price,
+                  },
+                  {
+                    colProps: { span: 8 },
+                    width: 'md',
+                    dataIndex: 'lastPrice',
+                    valueType: 'money',
+                    formItemProps: {
+                      rules: [{ required: true, message: '请输入直播价' }],
+                    },
+                    fieldProps: {
+                      addonBefore: '直播价',
+                      // placeholder: '直播价',
+                    },
                   },
                 ];
               }
@@ -153,8 +207,10 @@ const CreateTeamModal = <T extends API.Activity>(props: Iprops<T>) => {
         onOpenChange(open);
         if (open) {
           if (current) {
+            const newList: any[] = [];
             setProds(
               current.list?.reduce((p: API.ActivityProduct[], c) => {
+                newList.push({ ...c, stamps: c?.stamps ? c?.stamps.split(',') : [] });
                 if (p.length > 0 && p.find((m) => m.id === c.activityProductId)) {
                   return p;
                 } else {
@@ -162,7 +218,11 @@ const CreateTeamModal = <T extends API.Activity>(props: Iprops<T>) => {
                 }
               }, []),
             );
-            formRef.current?.setFieldsValue({ ...current, sources: `${current.sources}` });
+            formRef.current?.setFieldsValue({
+              ...current,
+              sources: `${current.sources}`,
+              list: newList,
+            });
           }
         } else {
           formRef.current?.resetFields();
@@ -172,11 +232,16 @@ const CreateTeamModal = <T extends API.Activity>(props: Iprops<T>) => {
       onFinish={async (values) => {
         const newProds = values.list!.map((n: any) =>
           typeof n.activityGiftId === 'object'
-            ? { ...n, activityGiftId: n.activityGiftId.id }
-            : { ...n },
+            ? { ...n, activityGiftId: n.activityGiftId.id, stamps: n.stamps.toString() }
+            : { ...n, stamps: n.stamps.toString() },
         );
         if (current) {
-          onFinish(await handleSubmit({ ...current, ...values, list: newProds }, updateActivity));
+          onFinish(
+            await handleSubmit(
+              { ...current, ...values, list: newProds, deleteList: deletids },
+              updateActivity,
+            ),
+          );
         } else {
           onFinish(
             await handleSubmit({ ...values, list: newProds, type: 0, status: 1 }, addActivity),

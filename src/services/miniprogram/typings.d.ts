@@ -59,6 +59,8 @@ declare namespace API {
   type ProdIdParams = {
     /** productId */
     productId?: number;
+    // 1直播商品 0 积分商品
+    type: number;
   };
   type TopIdParams = {
     /** topId */
@@ -229,6 +231,10 @@ declare namespace API {
     list?: ProductSpecs[];
     /** 商品类型: 0.玻璃餐具 1.睡衣浴袍 2.床上用品 3.家具装点 */
     topType?: number | string;
+    // 直播价格
+    lastPrice?: number;
+    // 直播时间段
+    stamps?: string;
   };
   type Activity = {
     createTime?: string;
@@ -238,7 +244,7 @@ declare namespace API {
     /** 来源: 0.家纺直播 1.家具直播 */
     sources?: number;
     /** 商品列表*/
-    list?: ActivityDetail[];
+    list?: (ActivityProduct & ActivityDetail)[];
     /** 状态: 0.关闭 1.开启 */
     status?: number;
     /** 类型: 0.直播预告  */

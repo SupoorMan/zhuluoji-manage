@@ -103,6 +103,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
           if (current) {
             formRef.current?.setFieldsValue({
               ...current,
+              type: `${current.type}`,
             });
           }
         } else {

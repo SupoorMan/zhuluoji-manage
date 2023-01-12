@@ -13,7 +13,10 @@ export async function addActivity(body: API.Activity, options?: { [key: string]:
 }
 
 /** 更新活动 POST /activity/update */
-export async function updateActivity(body: API.Activity, options?: { [key: string]: any }) {
+export async function updateActivity(
+  body: API.Activity & { deleteList?: [] },
+  options?: { [key: string]: any },
+) {
   return request<API.CommonResult>('/activity/update', {
     method: 'POST',
     headers: {
