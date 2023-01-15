@@ -1,15 +1,10 @@
 import { updateActivity, pageActivity, getActDetail } from '@/services/miniprogram/activity';
 import { PlusOutlined } from '@ant-design/icons';
-import {
-  ActionType,
-  ProColumns,
-  ProDescriptionsItemProps,
-  ProFormColumnsType,
-} from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { PageContainer, ProDescriptions, ProTable } from '@ant-design/pro-components';
-import { Button, Drawer, Tag, message } from 'antd';
+import { Button, Drawer, Image, message, Space } from 'antd';
 import React, { useRef, useState } from 'react';
-import EditModal from './components/EditModal';
+import EditModal from './components/EditShow';
 
 /**
  * @fields  需要更新状态的直播预告户
@@ -35,38 +30,40 @@ const ActivityList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.Activity>();
   const columns: ProColumns<API.Activity>[] = [
     {
-      title: '直播间',
-      dataIndex: 'sources',
+      title: '活动海报',
+      dataIndex: 'images',
       width: 'md',
+      hideInSearch: true,
       formItemProps: {
-        rules: [{ required: true, message: '直播间为必填项' }],
+        rules: [{ required: true, message: '活动海报为必填项' }],
       },
-      valueEnum: {
-        0: {
-          text: '酷酷的侏罗纪家居',
-        },
-        1: {
-          text: '酷酷的侏罗纪家纺',
-        },
-      },
-      render: (_, record) => (
-        <Tag color={record.sources === 1 ? 'red' : 'blue'}>
-          {['酷酷的侏罗纪家居', '酷酷的侏罗纪家纺'][record.sources!]}
-        </Tag>
-      ),
+      render: (_, record) => <Image src={record.images} width={80} height={130} />,
     },
-
     {
-      title: '直播日期',
+      title: '活动名称',
+      dataIndex: 'activityName',
+      width: 'md',
+      hideInSearch: true,
+      formItemProps: {
+        rules: [{ required: true, message: '活动名称为必填项' }],
+      },
+    },
+    {
+      title: '活动时间',
       dataIndex: 'days',
-      valueType: 'date',
+      valueType: 'dateRange',
       formItemProps: {
-        rules: [{ required: true, message: '直播日期为必填项' }],
+        rules: [{ required: true, message: '活动段为必填项' }],
       },
       width: 'md',
+      render: (_, record) => {
+        const arr = record.days?.split(',');
+
+        return <Space>{arr ? `${arr[0]} 至 ${arr[1]}` : ''}</Space>;
+      },
     },
     {
-      title: '预约数',
+      title: '参加人数',
       dataIndex: 'stater',
       valueType: 'digit',
       hideInSearch: true,
@@ -119,7 +116,7 @@ const ActivityList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<API.Activity>
-        headerTitle="直播预告列表"
+        headerTitle="买家秀活动列表"
         actionRef={actionRef}
         rowKey="id"
         toolBarRender={() => [
@@ -127,17 +124,16 @@ const ActivityList: React.FC = () => {
             <PlusOutlined /> 新建
           </Button>,
         ]}
-        params={{ type: 0 }}
+        params={{ type: 1 }}
         request={async (params) => {
           const { data } = await pageActivity(params);
           return { data: data?.records || [], success: true, total: data?.total || 0 };
         }}
-        pagination={false}
         columns={columns}
       />
       {createModalOpen && (
-        <EditModal<API.Activity>
-          title={`${currentRow ? `编辑` : `新建`} 直播预告`}
+        <EditModal
+          title={`${currentRow ? `编辑` : `新建`} 买家秀活动`}
           width={700}
           open={createModalOpen}
           onFinish={(success: boolean) => {
@@ -146,14 +142,14 @@ const ActivityList: React.FC = () => {
               handleModalOpen(false);
             }
           }}
-          onOpenChange={(open) => {
+          onOpenChange={(open: boolean) => {
             handleModalOpen(open);
             if (!open) {
               setCurrentRow(undefined);
             }
           }}
           current={currentRow}
-          columns={columns as ProFormColumnsType<API.Activity>[]}
+          columns={[...columns] as any}
         />
       )}
       <Drawer
@@ -168,7 +164,7 @@ const ActivityList: React.FC = () => {
         {currentRow?.id && (
           <ProDescriptions<API.Activity>
             column={1}
-            title="直播预告详情"
+            title="买家秀详情"
             request={async () => ({
               data: currentRow || {},
             })}

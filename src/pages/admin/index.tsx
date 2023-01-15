@@ -151,7 +151,7 @@ const AdminList: React.FC = () => {
         ]}
         request={async (params) => {
           const { data } = await pageUsers(params);
-          return { data: data?.records || 0, success: true, total: data?.totle || 0 };
+          return { data: data?.records || 0, success: true, total: data?.total || 0 };
         }}
         columns={columns}
       />

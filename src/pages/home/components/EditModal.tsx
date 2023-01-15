@@ -77,6 +77,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
   useEffect(() => {
     if (open) {
       if (photoList && photoList?.length > 0) {
+        photoList.reverse();
         photoList.forEach((m) => {
           if (m.images) {
             photoFileList[m.id] = m.images.split(',').map((i: string) => ({
@@ -118,8 +119,9 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
     isProd: boolean,
   ) => {
     const file = options.file as RcFile;
+
     if (file) {
-      const result = await uploadFile({ area: '侏罗纪的家' }, {}, file);
+      const result = await uploadFile({ area: 'zhuluojiHome' }, {}, file);
       if (result && result.data) {
         const nFile: UploadFile = {
           uid: file?.uid,
@@ -133,7 +135,9 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
           if (!photoFileList[index]) photoFileList[index] = [];
           photoFileList[index] = [...photoFileList[index], nFile];
           setPhotoFileList({ ...photoFileList });
-          const currentIndex = photos.findIndex((n: { rowKey: string }) => `${n.rowKey}` === index);
+          const currentIndex = photos.findIndex(
+            (n: { rowKey: string }) => `${n.rowKey}` === `${index}`,
+          );
           photos[currentIndex].images = photoFileList[index].map((n) => n.url).toString();
           formRef.current?.setFieldValue('photo', photos);
         } else {
@@ -241,6 +245,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
                         <ProFormUploadButton
                           title="上传图片"
                           listType="picture-card"
+                          name="images"
                           max={5}
                           colProps={{ span: 24 }}
                           fileList={photoFileList[rowKey] || []}

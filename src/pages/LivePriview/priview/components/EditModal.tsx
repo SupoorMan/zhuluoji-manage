@@ -244,7 +244,7 @@ const CreateTeamModal = <T extends API.Activity>(props: Iprops<T>) => {
           );
         } else {
           onFinish(
-            await handleSubmit({ ...values, list: newProds, type: 0, status: 1 }, addActivity),
+            await handleSubmit({ ...values, list: newProds, type: 0, status: 0 }, addActivity),
           );
         }
       }}

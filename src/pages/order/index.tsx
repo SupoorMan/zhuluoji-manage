@@ -237,7 +237,7 @@ const OrderList: React.FC = () => {
         rowKey="id"
         request={async (params) => {
           const { data } = await getOrders(params);
-          return { data: data?.records || 0, success: true, total: data?.totle || 0 };
+          return { data: data?.records || 0, success: true, total: data?.total || 0 };
         }}
         columns={columns}
       />

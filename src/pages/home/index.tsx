@@ -3,7 +3,7 @@ import { updateHome, pageHome, getHomeDetail } from '@/services/miniprogram/home
 import { PlusOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormColumnsType } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { Button, message, Upload } from 'antd';
+import { Button, message, notification, Upload } from 'antd';
 import { RcFile } from 'antd/es/upload/interface';
 import { UploadRequestOption } from 'rc-upload/lib/interface';
 import React, { useRef, useState } from 'react';
@@ -112,6 +112,7 @@ const HomeList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      width: 220,
       render: (_, record) => [
         <Upload
           key="upVideo"
@@ -122,8 +123,13 @@ const HomeList: React.FC = () => {
             if (record.images) {
               await handleRemove(record.images);
             }
-
-            if (await handleUploadFile(options, record)) actionRef.current?.reload();
+            notification.open({
+              message: '通知',
+              description: options.filename + '正在上传中,请等待...',
+            });
+            if (await handleUploadFile(options, record)) {
+              actionRef.current?.reload();
+            }
           }}
         >
           <a>上传视频</a>

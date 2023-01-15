@@ -198,6 +198,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
                         listType="picture-card"
                         max={1}
                         fileList={fileList}
+                        formItemProps={{ style: { marginBottom: 0 } }}
                         fieldProps={{
                           onPreview: (file) => {
                             if (file && file?.url) {

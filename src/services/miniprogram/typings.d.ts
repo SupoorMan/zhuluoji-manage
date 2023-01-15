@@ -153,6 +153,8 @@ declare namespace API {
     appletUserId?: number;
     /** 消费价格 */
     costs?: string;
+    /**奖励积分 */
+    integral: number;
     createTime?: string;
     id?: number;
     /** 订单图片证明 */
@@ -263,7 +265,6 @@ declare namespace API {
     /** 其他说明 */
     otherMsg?: string;
   };
-
   type LivePreview = {
     createTime?: string;
     /**说明+简介 */

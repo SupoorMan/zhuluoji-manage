@@ -243,7 +243,7 @@ const TableList: React.FC = () => {
         <a
           key="config"
           onClick={async () => {
-            const { data } = await getProdDetail({ productId: record.id });
+            const { data } = await getProdDetail({ productId: record.id, type: 0 });
             console.log(data);
             setCurrentRow(data);
             setShowDetail(false);

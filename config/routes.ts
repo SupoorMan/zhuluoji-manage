@@ -58,6 +58,12 @@ export default [
     path: '/order',
     component: './order',
   },
+  {
+    name: '转化订单',
+    icon: 'interaction',
+    path: '/transferOrder',
+    component: './transferOrder',
+  },
   // {
   //   name: '售后',
   //   icon: 'ShoppingCart',
@@ -110,6 +116,12 @@ export default [
     path: '/home',
     // access: 'canAdmin',
     component: './home',
+  },
+  {
+    name: '买家秀',
+    icon: 'gift',
+    path: '/buyerShow',
+    component: './saleShow',
   },
   {
     path: '/',

@@ -151,7 +151,7 @@ const ConfigList: React.FC = () => {
         ]}
         request={async () => {
           const { data } = await listConfigInfo();
-          return { data: (data as []) || [], success: true, total: data?.totle || 0 };
+          return { data: (data as []) || [], success: true, total: data?.total || 0 };
         }}
         pagination={false}
         columns={columns}

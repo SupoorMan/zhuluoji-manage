@@ -76,7 +76,7 @@ const CreateTeamModal = <T extends API.IntegralProduct>(props: Iprops<T>) => {
   const handleUploadFile = async (options: UploadRequestOption<any>) => {
     const file = options.file as File;
     if (file) {
-      const result = await uploadFile({ area: '积分商品' }, {}, file);
+      const result = await uploadFile({ area: 'integralProduct' }, {}, file);
       if (result && result.data) {
         const file: UploadFile = {
           uid: nanoid(),
@@ -211,7 +211,7 @@ const CreateTeamModal = <T extends API.IntegralProduct>(props: Iprops<T>) => {
             if (n.dataIndex === 'productImage') {
               return {
                 ...n,
-                // width: 'md',
+
                 colProps: { span: 24 },
                 formItemProps: {
                   style: {
@@ -227,6 +227,7 @@ const CreateTeamModal = <T extends API.IntegralProduct>(props: Iprops<T>) => {
                         colProps={{ span: 24 }}
                         max={5}
                         fileList={fileList}
+                        formItemProps={{ style: { marginBottom: 0 } }}
                         fieldProps={{
                           onPreview: (file) => {
                             if (file && file?.url) {

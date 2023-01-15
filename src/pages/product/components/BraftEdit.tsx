@@ -38,7 +38,7 @@ const RichEditor = (props: { detail: string; onChange: (val: string) => void }) 
     error: (err: { msg: string }) => void;
   }) => {
     if (params.file) {
-      uploadFile({ area: '积分商品' }, {}, params.file, params.progress).then((result) => {
+      uploadFile({ area: 'integralProduct' }, {}, params.file, params.progress).then((result) => {
         if (result.code === 200 && result.data) {
           params.success({
             url: result.data,

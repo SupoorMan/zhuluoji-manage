@@ -139,7 +139,7 @@ const ConfigList: React.FC = () => {
         ]}
         request={async () => {
           const { data } = await listBanner();
-          return { data: (data as []) || [], success: true, total: data?.totle || 0 };
+          return { data: (data as []) || [], success: true, total: data?.total || 0 };
         }}
         pagination={false}
         columns={columns}
