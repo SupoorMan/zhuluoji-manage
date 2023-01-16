@@ -61,6 +61,7 @@ const RichEditor = (props: { detail: string; onChange: (val: string) => void }) 
       <BraftEditor
         excludeControls={['code', 'blockquote', 'emoji', 'link']}
         value={editorState}
+        contentStyle={{ height: 760 }}
         media={{ uploadFn: myUploadFn }}
         onChange={setEditorState}
         onSave={submitContent}

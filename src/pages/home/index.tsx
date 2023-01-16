@@ -48,7 +48,7 @@ const HomeList: React.FC = () => {
   const handleUploadFile = async (options: UploadRequestOption<any>, record: API.Home) => {
     const file = options.file as RcFile;
     if (file) {
-      const result = await uploadFile({ area: '侏罗纪的家' }, {}, file);
+      const result = await uploadFile({ area: 'zhuluojihome' }, {}, file);
       if (result && result.data) {
         const { code } = await updateHome({ home: [{ ...record, images: result.data }] });
         if (code === 200) {

@@ -180,7 +180,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
         if (current) {
           onFinish(await handleSubmit({ ...current, ...values }, updateActProd));
         } else {
-          onFinish(await handleSubmit({ ...values }, addActProd));
+          onFinish(await handleSubmit({ ...values, type: 0 }, addActProd));
         }
       }}
       columns={

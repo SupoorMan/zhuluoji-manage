@@ -108,11 +108,11 @@ const TableList: React.FC = () => {
       dataIndex: 'productType',
       valueType: 'select',
       valueEnum: {
-        // 0.玻璃餐具 1.睡衣浴袍 2.床上用品 3.家具装点
-        0: '玻璃餐具',
-        1: '睡衣浴袍',
-        2: '床上用品',
-        3: '家具装点',
+        // 0.餐具摆件 1.睡衣浴袍 2.床品家纺 3.生活日用
+        0: '餐具摆件',
+        // 1: '睡衣浴袍',
+        2: '床品家纺',
+        3: '生活日用',
       },
       formItemProps: {
         rules: [{ required: true, message: '商品类型为必填项' }],
@@ -144,6 +144,7 @@ const TableList: React.FC = () => {
       dataIndex: 'recommend',
       hideInTable: true,
       hideInForm: true,
+      hideInDescriptions: true,
       valueEnum: {
         0: {
           text: '不推荐',
@@ -169,13 +170,13 @@ const TableList: React.FC = () => {
       title: '上架状态',
       dataIndex: 'shopping',
       valueEnum: {
-        0: {
-          text: '下架',
-          status: 'Default',
-        },
         1: {
           text: '上架',
           status: 'Processing',
+        },
+        0: {
+          text: '下架',
+          status: 'Default',
         },
       },
       formItemProps: {
@@ -370,41 +371,42 @@ const TableList: React.FC = () => {
         }}
         closable={false}
       >
-        {currentRow?.productName && (
-          <Card type="inner" title="商品信息" style={{ marginBottom: 24 }}>
-            <ProDescriptions<API.IntegralProduct>
-              column={3}
-              dataSource={currentRow}
-              columns={
-                [...columns].splice(
-                  0,
-                  columns.length - 1,
-                ) as ProDescriptionsItemProps<API.IntegralProduct>[]
-              }
-            />
-          </Card>
-        )}
-        {currentRow && (
-          <Card
-            type="inner"
-            title="图文详情"
-            extra={
-              <a
-                onClick={async () => {
-                  const success = await handleUpdateDetail(currentRow, newDetail);
-                  if (success) {
-                    actionRef.current?.reload();
-                  }
-                }}
-              >
-                保存
-              </a>
+        {/* {currentRow?.productName && ( */}
+        <Card type="inner" title="商品信息" style={{ marginBottom: 24 }}>
+          <ProDescriptions<API.IntegralProduct>
+            column={3}
+            dataSource={currentRow}
+            columns={
+              [...columns].splice(
+                0,
+                columns.length - 1,
+              ) as ProDescriptionsItemProps<API.IntegralProduct>[]
             }
-            bodyStyle={{ padding: 0 }}
-          >
-            <RichEditor detail={currentRow?.details || ''} onChange={setNewDetail} />
-          </Card>
-        )}
+          />
+        </Card>
+        {/* )} */}
+        {/* {currentRow && ( */}
+        <Card
+          type="inner"
+          title="图文详情"
+          extra={
+            <a
+              onClick={async () => {
+                if (!currentRow) return;
+                const success = await handleUpdateDetail(currentRow, newDetail);
+                if (success) {
+                  actionRef.current?.reload();
+                }
+              }}
+            >
+              保存
+            </a>
+          }
+          bodyStyle={{ padding: 0, height: 850 }}
+        >
+          {currentRow && <RichEditor detail={currentRow?.details || ''} onChange={setNewDetail} />}
+        </Card>
+        {/* )} */}
       </Drawer>
     </PageContainer>
   );

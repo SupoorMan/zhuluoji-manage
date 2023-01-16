@@ -62,10 +62,10 @@ const TableList: React.FC = () => {
       dataIndex: 'topType',
       valueType: 'select',
       valueEnum: {
-        0: '玻璃餐具',
+        0: '餐具摆件',
         1: '睡衣浴袍',
-        2: '床上用品',
-        3: '家具装点',
+        2: '床品家纺',
+        3: '生活日用',
       },
       formItemProps: {
         rules: [{ required: true, message: '商品类型为必填项' }],
@@ -133,6 +133,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> 新建
           </Button>,
         ]}
+        params={{ type: 0 }}
         request={async (params) => {
           const { data } = await pageActProd({ ...params });
           return { data: data?.records || 0, success: true, total: data?.total || 0 };

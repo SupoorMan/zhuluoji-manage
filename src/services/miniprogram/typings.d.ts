@@ -49,6 +49,8 @@ declare namespace API {
   type ProdDetailParams = {
     /** productId */
     productId?: number;
+    // 1直播商品 0 积分商品
+    type: number;
   };
 
   type IdParams = {
@@ -183,7 +185,7 @@ declare namespace API {
     productImage?: string;
     /** 商品名称 */
     productName?: string;
-    /** 商品类型: 0.玻璃餐具 1.睡衣浴袍 2.床上用品 3.家具装点 */
+    /** 商品类型: 0.餐具摆件 1.睡衣浴袍 2.床品家纺 3.生活日用 */
     productType?: number | string;
     /** 限购数量 */
     purchaseLimit?: number;
@@ -231,7 +233,7 @@ declare namespace API {
     type?: number;
     /** 规格列表*/
     list?: ProductSpecs[];
-    /** 商品类型: 0.玻璃餐具 1.睡衣浴袍 2.床上用品 3.家具装点 */
+    /** 商品类型: 0.餐具摆件 1.睡衣浴袍 2.床品家纺 3.生活日用 */
     topType?: number | string;
     // 直播价格
     lastPrice?: number;

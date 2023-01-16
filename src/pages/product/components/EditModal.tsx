@@ -211,7 +211,6 @@ const CreateTeamModal = <T extends API.IntegralProduct>(props: Iprops<T>) => {
             if (n.dataIndex === 'productImage') {
               return {
                 ...n,
-
                 colProps: { span: 24 },
                 formItemProps: {
                   style: {
