@@ -70,6 +70,7 @@ const OrderList: React.FC = () => {
   const [sendCode, setSendCode] = useState<string>('');
   const [currentRow, setCurrentRow] = useState<API.Order>();
   const actionRef = useRef<ActionType>();
+  const newAddressText = useRef<any>();
   const columns: ProColumns<API.Order>[] = [
     {
       title: '订单号',
@@ -89,12 +90,9 @@ const OrderList: React.FC = () => {
       },
     },
     {
-      title: '价值',
-      dataIndex: 'integral',
-      valueType: 'digit',
+      title: '商品',
+      dataIndex: 'productName',
       hideInSearch: true,
-      sorter: true,
-      render: (dom) => <>{dom}积分</>,
     },
     {
       title: '数量',
@@ -103,18 +101,14 @@ const OrderList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '运费',
-      dataIndex: 'expressFee',
-      valueType: 'money',
+      title: '价值',
+      dataIndex: 'integral',
+      valueType: 'digit',
       hideInSearch: true,
-      render: (_, record) => {
-        return (
-          <>
-            {record?.transferDetail}:{_}
-          </>
-        );
-      },
+      sorter: true,
+      render: (dom) => <>{dom}积分</>,
     },
+
     {
       title: '当前进度',
       dataIndex: 'status',
@@ -159,22 +153,10 @@ const OrderList: React.FC = () => {
         },
       },
     },
-    {
-      title: '下单时间',
-      sorter: true,
-      dataIndex: 'createTime',
-      valueType: 'dateTime',
-      hideInSearch: true,
-    },
-    {
-      title: '更新时间',
-      dataIndex: 'updateTime',
-      valueType: 'dateTime',
-      hideInSearch: true,
-    },
+
     {
       title: '购买用户',
-      dataIndex: 'appletUserId',
+      dataIndex: 'nickname',
       hideInSearch: true,
     },
     {
@@ -189,9 +171,24 @@ const OrderList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: '下单时间',
+      sorter: true,
+      dataIndex: 'createTime',
+      valueType: 'dateTime',
+      hideInSearch: true,
+    },
+    {
+      title: '更新时间',
+      dataIndex: 'updateTime',
+      valueType: 'dateTime',
+      hideInTable: true,
+      hideInSearch: true,
+    },
+    {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      hideInDescriptions: true,
       render: (_, record) => [
         record.status === 1 ? (
           <a
@@ -221,8 +218,32 @@ const OrderList: React.FC = () => {
         <TableDropdown
           key="actionGroup"
           menus={[
-            { key: 'delete', name: '取消', onClick: () => handleCancel(record) },
-            { key: 'change', name: '修改收货地址', onClick: () => setShowDetail(true) },
+            {
+              key: 'change',
+              name: '修改收货地址',
+              onClick: () => {
+                Modal.confirm({
+                  title: '更新收货地址',
+                  content: (
+                    <Input.TextArea
+                      ref={newAddressText}
+                      style={{ marginTop: 8, marginBottom: 16 }}
+                      defaultValue={record?.receiveAddress}
+                      placeholder="请输入新收货地址"
+                    />
+                  ),
+                  onOk: async () => {
+                    if (newAddressText && newAddressText.current.value) {
+                      await handleUpdateAddr({
+                        ...record,
+                        receiveAddress: newAddressText.current.value,
+                      });
+                    }
+                  },
+                });
+              },
+            },
+            { key: 'delete', name: '取消订单', onClick: () => handleCancel(record) },
           ]}
         />,
       ],
@@ -240,6 +261,7 @@ const OrderList: React.FC = () => {
           return { data: data?.records || 0, success: true, total: data?.total || 0 };
         }}
         columns={columns}
+        pagination={{ defaultPageSize: 10 }}
       />
 
       <Drawer
@@ -259,7 +281,7 @@ const OrderList: React.FC = () => {
                 return await handleUpdateAddr(newInfo);
               },
             }}
-            title={currentRow?.id}
+            title={'订单详情'}
             request={async () => ({
               data: currentRow || {},
             })}

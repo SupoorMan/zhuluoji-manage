@@ -123,6 +123,7 @@ const AfterSalesList: React.FC = () => {
           const { data } = await pageAfterSales(params);
           return { data: data?.records || 0, success: true, total: data?.total || 0 };
         }}
+        pagination={{ defaultPageSize: 10 }}
         columns={columns}
       />
 

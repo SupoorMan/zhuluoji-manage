@@ -129,6 +129,7 @@ const ActivityList: React.FC = () => {
           const { data } = await pageActivity(params);
           return { data: data?.records || [], success: true, total: data?.total || 0 };
         }}
+        pagination={{ defaultPageSize: 10 }}
         columns={columns}
       />
       {createModalOpen && (

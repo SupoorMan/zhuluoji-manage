@@ -15,7 +15,7 @@ const Settings: LayoutSettings & {
   fixedHeader: true,
   fixSiderbar: true,
   colorWeak: false,
-  title: '酷酷的侏罗纪vip',
+  title: '酷酷的侏罗纪',
   pwa: false,
   logo: false,
   iconfontUrl: '',

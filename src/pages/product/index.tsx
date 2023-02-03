@@ -304,6 +304,7 @@ const TableList: React.FC = () => {
           const { data } = await getProds({ ...params });
           return { data: data?.records || 0, success: true, total: data?.total || 0 };
         }}
+        pagination={{ defaultPageSize: 10 }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {

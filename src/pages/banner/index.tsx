@@ -60,6 +60,7 @@ const ConfigList: React.FC = () => {
       valueEnum: {
         0: { text: '首页' },
         1: { text: '直播预告' },
+        2: { text: '买家秀' },
       },
     },
     {

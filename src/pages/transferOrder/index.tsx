@@ -1,7 +1,7 @@
 import { pageConvert, updateConvert } from '@/services/miniprogram/orderConvert';
 import { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { PageContainer, ProDescriptions, ProTable } from '@ant-design/pro-components';
-import { Drawer, InputNumber, message, Modal, Image } from 'antd';
+import { Drawer, InputNumber, message, Modal, Image, Input } from 'antd';
 import React, { useRef, useState } from 'react';
 
 /**@description 更新订单
@@ -23,58 +23,15 @@ const handleUpdate = async (fields: API.OrderConvert) => {
 
 const OrderList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  // const [sendIntegral, setSendIntegral] = useState<number>(2);
+  const [modalOpen, handleModalOpen] = useState<1 | 2 | 0>(0); //
+  const [errorText, setError] = useState<boolean>(false);
   const [currentRow, setCurrentRow] = useState<API.OrderConvert>();
   const actionRef = useRef<ActionType>();
   const sendIntegral = useRef<any>();
+  const resonText = useRef<any>();
   const columns: ProColumns<API.OrderConvert>[] = [
     {
-      title: '订单图片',
-      dataIndex: 'images',
-      valueType: 'image',
-      hideInSearch: true,
-
-      render: (_, record) => <Image src={record.images} width={80} height={130} />,
-    },
-    {
-      title: '订单号',
-      dataIndex: 'orderNo',
-      hideInSearch: true,
-      render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
-        );
-      },
-    },
-    {
-      title: '消费价格',
-      dataIndex: 'costs',
-      valueType: 'money',
-      hideInSearch: true,
-    },
-    {
-      title: '订单备注',
-      dataIndex: 'remark',
-      hideInSearch: true,
-    },
-    {
-      title: '奖励积分',
-      dataIndex: 'integral',
-      valueType: 'digit',
-      hideInSearch: true,
-      sorter: true,
-      render: (dom, record) => (record.integral ? <>{dom}积分</> : '-'),
-    },
-
-    {
-      title: '来源',
+      title: '订单平台',
       dataIndex: 'type',
       valueEnum: {
         4: {
@@ -100,6 +57,28 @@ const OrderList: React.FC = () => {
       },
     },
     {
+      title: '订单号',
+      dataIndex: 'orderNo',
+      hideInSearch: true,
+      render: (dom, entity) => {
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
+    },
+    {
+      title: '手机号',
+      dataIndex: 'phone',
+      hideInSearch: true,
+    },
+    {
       title: '审核状态',
       dataIndex: 'status',
       valueEnum: {
@@ -113,9 +92,21 @@ const OrderList: React.FC = () => {
         },
         2: {
           text: '未通过',
-          status: 'success',
+          status: 'warning',
         },
       },
+    },
+    {
+      title: '消费金额',
+      dataIndex: 'costs',
+      valueType: 'money',
+      hideInSearch: true,
+    },
+    {
+      title: '审核备注',
+      dataIndex: 'remark',
+      hideInTable: true,
+      hideInSearch: true,
     },
     {
       title: '申请时间',
@@ -124,50 +115,39 @@ const OrderList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '购买用户id',
-      dataIndex: 'appletUserId',
-      hideInTable: true,
+      title: '订单图片',
+      dataIndex: 'images',
+      valueType: 'image',
       hideInSearch: true,
+      hideInTable: true,
+      render: (_, record) =>
+        record.images ? <Image src={record.images} width={80} height={130} /> : '-',
     },
+
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      width: 120,
       render: (_, record) => {
         return record.status === 0
           ? [
               <a
                 key="config"
                 onClick={() => {
-                  Modal.confirm({
-                    title: '请输入奖励积分',
-                    content: (
-                      <InputNumber
-                        ref={sendIntegral}
-                        style={{ marginTop: 8, marginBottom: 16, width: 200 }}
-                        placeholder="奖励积分2~10积分"
-                        min={2}
-                        max={10}
-                      />
-                    ),
-                    onOk: async () => {
-                      if (sendIntegral && !sendIntegral.current.value) {
-                        return false;
-                      }
-                      await handleUpdate({
-                        ...record,
-                        status: 1,
-                        integral: sendIntegral.current.value,
-                      });
-                      actionRef.current?.reload();
-                    },
-                  });
+                  setCurrentRow(record);
+                  handleModalOpen(1);
                 }}
               >
                 通过
               </a>,
-              <a key="nopass" onClick={() => handleUpdate({ ...record, status: 2 })}>
-                {' '}
+              <a
+                key="nopass"
+                onClick={async () => {
+                  setCurrentRow(record);
+                  handleModalOpen(2);
+                }}
+              >
                 不通过
               </a>,
             ]
@@ -186,9 +166,74 @@ const OrderList: React.FC = () => {
           const { data } = await pageConvert(params);
           return { data: data?.records || 0, success: true, total: data?.total || 0 };
         }}
+        pagination={{ defaultPageSize: 10 }}
         columns={columns}
       />
-
+      <Modal
+        width={360}
+        destroyOnClose={true}
+        title={modalOpen === 1 ? '请输入该订单消费金额' : '请输入不通过原因'}
+        open={modalOpen !== 0}
+        onOk={async () => {
+          if (modalOpen === 2) {
+            if (resonText && !resonText.current.resizableTextArea.textArea.value) {
+              setError(true);
+              return false;
+            }
+          } else {
+            if (sendIntegral && !sendIntegral.current.value) {
+              setError(true);
+              return false;
+            }
+          }
+          setError(false);
+          const data =
+            modalOpen === 1
+              ? {
+                  status: modalOpen,
+                  costs: sendIntegral.current.value,
+                  integral: Math.floor(sendIntegral.current.value),
+                  remark: resonText.current.resizableTextArea.textArea.value || '通过',
+                }
+              : {
+                  status: modalOpen,
+                  remark: resonText.current.resizableTextArea.textArea.value,
+                };
+          await handleUpdate({
+            ...currentRow,
+            ...data,
+          });
+          actionRef.current?.reload();
+          handleModalOpen(0);
+        }}
+        onCancel={() => {
+          handleModalOpen(0);
+          setError(false);
+        }}
+      >
+        <>
+          {errorText && (
+            <div style={{ color: 'red' }}>
+              {modalOpen === 2 ? `请输入不通过原因` : `请输入订单兑换积分`}
+            </div>
+          )}
+          {modalOpen === 1 && (
+            <>
+              <InputNumber
+                ref={sendIntegral}
+                style={{ marginTop: 8, marginBottom: 16, width: 200 }}
+                placeholder="订单消费金额"
+              />
+              <br />
+            </>
+          )}
+          <Input.TextArea
+            ref={resonText}
+            style={{ marginTop: 8, marginBottom: 16, width: 300 }}
+            placeholder={modalOpen === 1 ? '审核备注' : '拒绝原因'}
+          />
+        </>
+      </Modal>
       <Drawer
         width={500}
         open={showDetail}
@@ -201,7 +246,7 @@ const OrderList: React.FC = () => {
         {currentRow?.id && (
           <ProDescriptions<API.OrderConvert>
             column={1}
-            title={currentRow?.id}
+            title={'订单详情'}
             request={async () => ({
               data: currentRow || {},
             })}
@@ -209,12 +254,7 @@ const OrderList: React.FC = () => {
               id: currentRow?.id,
             }}
             columns={
-              columns.map((n) => {
-                if (n.dataIndex !== 'receiveAddress') {
-                  n.editable = false;
-                }
-                return n;
-              }) as ProDescriptionsItemProps<API.OrderConvert>[]
+              columns.slice(0, columns.length - 1) as ProDescriptionsItemProps<API.OrderConvert>[]
             }
           />
         )}

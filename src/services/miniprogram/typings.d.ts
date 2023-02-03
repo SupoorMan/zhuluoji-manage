@@ -154,9 +154,9 @@ declare namespace API {
     /** 小程序用户id */
     appletUserId?: number;
     /** 消费价格 */
-    costs?: string;
+    costs?: number;
     /**奖励积分 */
-    integral: number;
+    integral?: number;
     createTime?: string;
     id?: number;
     /** 订单图片证明 */
@@ -329,6 +329,8 @@ declare namespace API {
 
   type pageActProdParams = {
     productName?: string;
+    /**0 直播商品 */
+    type?: number;
   } & PageParams;
 
   type PageUserInfoParams = {

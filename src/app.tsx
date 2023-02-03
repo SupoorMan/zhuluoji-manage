@@ -58,7 +58,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       }
     },
     style: {
-      height: '100vh',
+      minHeight: '100vh',
     },
     token: {
       header: {

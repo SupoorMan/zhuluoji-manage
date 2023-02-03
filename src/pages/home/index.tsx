@@ -190,6 +190,7 @@ const HomeList: React.FC = () => {
           return { data: data?.records || 0, success: true, total: data?.total || 0 };
         }}
         columns={columns}
+        pagination={{ defaultPageSize: 10 }}
       />
       <EditModal
         key="editM"

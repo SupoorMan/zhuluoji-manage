@@ -153,7 +153,7 @@ const ConfigList: React.FC = () => {
           const { data } = await listConfigInfo();
           return { data: (data as []) || [], success: true, total: data?.total || 0 };
         }}
-        pagination={false}
+        pagination={{ defaultPageSize: 10 }}
         columns={columns}
       />
       <EditModal<API.ConfigInfo>

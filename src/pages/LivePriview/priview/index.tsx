@@ -132,8 +132,8 @@ const ActivityList: React.FC = () => {
           const { data } = await pageActivity(params);
           return { data: data?.records || [], success: true, total: data?.total || 0 };
         }}
-        pagination={false}
         columns={columns}
+        pagination={{ defaultPageSize: 10 }}
       />
       {createModalOpen && (
         <EditModal<API.Activity>

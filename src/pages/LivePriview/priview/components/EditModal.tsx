@@ -103,7 +103,12 @@ const CreateTeamModal = <T extends API.Activity>(props: Iprops<T>) => {
                 value: 'id',
               },
               onSearch: async (value?: string) => {
-                const result = await pageActProd({ productName: value, pageSize: 30, current: 1 });
+                const result = await pageActProd({
+                  productName: value,
+                  type: 0,
+                  pageSize: 30,
+                  current: 1,
+                });
                 setProds(result.data?.records);
                 return result.data?.records;
               },

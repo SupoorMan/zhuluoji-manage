@@ -53,13 +53,13 @@ export default [
     component: './product',
   },
   {
-    name: '订单',
+    name: '商城订单',
     icon: 'profile',
     path: '/order',
     component: './order',
   },
   {
-    name: '转化订单',
+    name: '三方订单',
     icon: 'interaction',
     path: '/transferOrder',
     component: './transferOrder',
@@ -70,14 +70,9 @@ export default [
   //   path: '/salesAfter',
   //   component: './afterSales',
   // },
+
   {
-    name: '会员',
-    icon: 'team',
-    path: '/user/manage',
-    component: './User/Searching',
-  },
-  {
-    name: '首页轮播',
+    name: '轮播广告',
     icon: 'tool',
     path: '/banner',
     component: './banner',
@@ -114,7 +109,6 @@ export default [
     name: '侏罗纪的家',
     icon: 'home',
     path: '/home',
-    // access: 'canAdmin',
     component: './home',
   },
   {
@@ -122,6 +116,13 @@ export default [
     icon: 'gift',
     path: '/buyerShow',
     component: './saleShow',
+  },
+
+  {
+    name: '会员',
+    icon: 'team',
+    path: '/user/manage',
+    component: './User/Searching',
   },
   {
     path: '/',

@@ -101,7 +101,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
     price: number;
     id: number;
   }> = {
-    title: '赠品规格',
+    title: '商品规格',
     valueType: 'formList',
     dataIndex: 'list',
     colProps: { md: 24 },

@@ -108,6 +108,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
           }
         } else {
           formRef.current?.resetFields();
+          setFileList(undefined);
         }
       }}
       layoutType="ModalForm"
