@@ -83,6 +83,13 @@ declare namespace API {
     sources?: string;
   } & PageParams;
 
+  type pageActivityDetailParams = {
+    // 1 买家秀
+    type?: number;
+    status?: number;
+    activityId?: number;
+  } & PageParams;
+
   type ManageUser = {
     createTime?: string;
     id?: number;
@@ -148,6 +155,8 @@ declare namespace API {
     /** 订单状态: -1.取消 0.下单未支付 1.下单支付完成 2.发货中 3.签收完成 */
     status?: number;
     updateTime?: string;
+    colors?: string;
+    sizes?: string;
   };
 
   type OrderConvert = {

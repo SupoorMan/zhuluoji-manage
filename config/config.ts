@@ -1,10 +1,9 @@
 // https://umijs.org/config/
 import { defineConfig } from '@umijs/max';
-import { join } from 'path';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
-
+import zhCN from 'antd/locale/zh_CN';
 const { REACT_APP_ENV = 'dev' } = process.env;
 
 export default defineConfig({
@@ -96,7 +95,11 @@ export default defineConfig({
    * @description 内置了 babel import 插件
    * @doc https://umijs.org/docs/max/antd#antd
    */
-  antd: {},
+  antd: {
+    configProvider: {
+      locale: zhCN,
+    },
+  },
   /**
    * @name 网络请求配置
    * @description 它基于 axios 和 ahooks 的 useRequest 提供了一套统一的网络请求和错误处理方案。
@@ -116,14 +119,17 @@ export default defineConfig({
    * @description 基于 openapi 的规范生成serve 和mock，能减少很多样板代码
    * @doc https://pro.ant.design/zh-cn/docs/openapi/
    */
-  openAPI: [
-    {
-      requestLibPath: "import { request } from '@umijs/max'",
-      // schemaPath: 'http://47.96.64.19:8888/v3/api-docs',
-      schemaPath: 'http://192.168.31.152:8888/zhuluoji/v3/api-docs',
-      projectName: 'new-mini',
-    },
-  ],
+  // openAPI: [
+  //   {
+  //     requestLibPath: "import { request } from '@umijs/max'",
+  //     // schemaPath: 'http://47.96.64.19:8888/v3/api-docs',
+  //     schemaPath: 'http://192.168.31.152:8888/zhuluoji/v3/api-docs',
+  //     projectName: 'new-mini',
+  //   },
+  // ],
+  base: '/',
+  publicPath: '/',
+  outputPath: 'zhuluoji_manage',
   // mfsu: {
   //   strategy: 'normal',
   // },

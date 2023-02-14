@@ -10,7 +10,10 @@ import { errorConfig } from './requestErrorConfig';
 import React from 'react';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
+import dayjs from 'dayjs';
+import 'dayjs/locale/zh-cn';
 
+dayjs.locale('zh-cn');
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
@@ -48,6 +51,7 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
+    locale: 'zh-CN',
     rightContentRender: () => <RightContent />,
     footerRender: () => <Footer />,
     onPageChange: () => {
@@ -113,6 +117,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
     childrenRender: (children) => {
+      console.log(initialState);
       if (initialState?.loading) return <PageLoading />;
       return (
         <>

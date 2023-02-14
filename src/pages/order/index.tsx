@@ -20,7 +20,7 @@ import React, { useRef, useState } from 'react';
 const handleUpdate = async (fields: API.Order) => {
   const hide = message.loading('更新中');
   try {
-    await updateStatus({ id: fields.id, status: 2 });
+    await updateStatus({ ...fields, status: 2 });
     hide();
     message.success('更新发货进度成功');
     return true;
@@ -67,11 +67,21 @@ const handleCancel = async (record: API.Order) => {
 
 const OrderList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [sendCode, setSendCode] = useState<string>('');
+  // const [sendCode, setSendCode] = useState<string>('');
   const [currentRow, setCurrentRow] = useState<API.Order>();
   const actionRef = useRef<ActionType>();
   const newAddressText = useRef<any>();
+  const sendCode = useRef<any>();
   const columns: ProColumns<API.Order>[] = [
+    {
+      title: '关键字',
+      dataIndex: 'context',
+      hideInDescriptions: true,
+      hideInTable: true,
+      fieldProps: {
+        placeholder: '请输入订单号、商品名称或收货地址',
+      },
+    },
     {
       title: '订单号',
       dataIndex: 'orderNo',
@@ -95,6 +105,14 @@ const OrderList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: '规格',
+      dataIndex: 'sizes',
+      hideInSearch: true,
+      render: (_, record) => {
+        return (record?.colors || '') + record?.sizes;
+      },
+    },
+    {
       title: '数量',
       dataIndex: 'amount',
       valueType: 'digit',
@@ -108,7 +126,6 @@ const OrderList: React.FC = () => {
       sorter: true,
       render: (dom) => <>{dom}积分</>,
     },
-
     {
       title: '当前进度',
       dataIndex: 'status',
@@ -134,6 +151,11 @@ const OrderList: React.FC = () => {
           status: 'Success',
         },
       },
+    },
+    {
+      title: '运单号',
+      dataIndex: 'transferNo',
+      hideInSearch: true,
     },
     {
       title: '状态',
@@ -198,15 +220,17 @@ const OrderList: React.FC = () => {
                 title: '是否确认发货',
                 content: (
                   <Input
+                    ref={sendCode}
                     style={{ marginTop: 8, marginBottom: 16 }}
                     placeholder="请输入运单号"
-                    onChange={(e) => {
-                      const { value } = e.target;
-                      setSendCode(value);
-                    }}
                   />
                 ),
-                onOk: () => handleUpdate({ ...record, transferNo: sendCode }),
+                onOk: async () => {
+                  if (sendCode && sendCode.current.input.value) {
+                    await handleUpdate({ ...record, transferNo: sendCode.current.input.value });
+                    actionRef.current?.reload();
+                  }
+                },
               });
             }}
           >
@@ -233,11 +257,12 @@ const OrderList: React.FC = () => {
                     />
                   ),
                   onOk: async () => {
-                    if (newAddressText && newAddressText.current.value) {
+                    if (newAddressText && newAddressText.current.resizableTextArea.textArea.value) {
                       await handleUpdateAddr({
                         ...record,
-                        receiveAddress: newAddressText.current.value,
+                        receiveAddress: newAddressText.current.resizableTextArea.textArea.value,
                       });
+                      actionRef.current?.reload();
                     }
                   },
                 });

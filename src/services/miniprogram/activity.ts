@@ -50,6 +50,19 @@ export async function getActDetail(params: API.ActivityIdParams, options?: { [ke
     ...(options || {}),
   });
 }
+/** 查询买家秀活动详情 GET /activityDetail/page */
+export async function pageActDetail(
+  params: API.pageActivityDetailParams,
+  options?: { [key: string]: any },
+) {
+  return request<API.CommonResult>('/activityDetail/page', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
 
 /** 新增活动详情关系 POST /activityDetail/add */
 export async function addActDetail(body: API.ActivityDetail, options?: { [key: string]: any }) {

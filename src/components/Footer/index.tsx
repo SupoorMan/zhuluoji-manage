@@ -16,14 +16,16 @@ const Footer: React.FC = () => {
         {
           title: (
             <>
-              <img src="beian_icon.png" alt="" style={{ verticalAlign: 'middle' }} /> 浙网公安备
+              <img src="../beian_icon.png" alt="" style={{ verticalAlign: 'middle' }} /> 浙网公安备
               33010602012935号
             </>
           ),
           href: 'http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010602012935',
           blankTarget: true,
+          key: '1',
         },
         {
+          key: '2',
           title: beianhao,
           href: 'https://beian.miit.gov.cn/',
           blankTarget: true,

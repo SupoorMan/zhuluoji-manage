@@ -119,7 +119,7 @@ const Welcome: React.FC = () => {
               color: token.colorTextHeading,
             }}
           >
-            您好，{initialState?.currentUser?.phone} ！欢迎登录『酷酷的侏罗纪vip小程序管理平台』
+            您好，{initialState?.currentUser?.phone} ！欢迎登录『酷酷的侏罗纪小程序管理平台』
           </div>
           <p
             style={{

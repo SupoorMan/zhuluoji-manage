@@ -133,6 +133,7 @@ const CreateTeamModal = <T extends API.Activity>(props: Iprops<T>) => {
             valueType: 'dependency',
             name: ['activityProductId'],
             columns: ({ activityProductId }) => {
+              // console.log('shangping', activityProductId);
               return activityProductId
                 ? [
                     {
@@ -147,13 +148,14 @@ const CreateTeamModal = <T extends API.Activity>(props: Iprops<T>) => {
                           value: 'id',
                         },
                       },
+                      params: { productId: activityProductId },
                       formItemProps: {
                         rules: [{ required: true, message: '请选择规格' }],
                       },
                       proFieldProps: {
-                        request: async () => {
+                        request: async (params: any) => {
                           const result = await listProdSpecs({
-                            productId: activityProductId,
+                            ...params,
                             type: 1,
                           });
                           return result.data;

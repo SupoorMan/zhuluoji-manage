@@ -11,11 +11,11 @@
  */
 export default {
   dev: {
-    '/api': {
+    '/zhuluoji': {
       // target: 'http://47.96.64.19:8888/',
-      target: 'http://192.168.31.152:8888/',
+      // target: 'http://192.168.31.152:8888/',
+      target: 'https://www.shuzhuyun.com',
       changeOrigin: true,
-      pathRewrite: { '^/api': '/zhuluoji' },
     },
   },
   /**

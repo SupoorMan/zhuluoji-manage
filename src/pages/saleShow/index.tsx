@@ -5,6 +5,7 @@ import { PageContainer, ProDescriptions, ProTable } from '@ant-design/pro-compon
 import { Button, Drawer, Image, message, Space } from 'antd';
 import React, { useRef, useState } from 'react';
 import EditModal from './components/EditShow';
+import JoinList from './components/JoinList';
 
 /**
  * @fields  需要更新状态的直播预告户
@@ -26,6 +27,7 @@ const handleRemove = async (field: API.Activity) => {
 const ActivityList: React.FC = () => {
   const [createModalOpen, handleModalOpen] = useState<boolean>(false); // 新建窗口的弹窗
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [showJoinDetail, setShowJoinDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.Activity>();
   const columns: ProColumns<API.Activity>[] = [
@@ -88,6 +90,7 @@ const ActivityList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      width: 120,
       render: (_, record) => [
         <a
           key="config"
@@ -98,6 +101,15 @@ const ActivityList: React.FC = () => {
           }}
         >
           编辑
+        </a>,
+        <a
+          key="show"
+          onClick={async () => {
+            setCurrentRow({ ...record });
+            setShowJoinDetail(true);
+          }}
+        >
+          查看评论
         </a>,
         <a
           key="show"
@@ -154,6 +166,7 @@ const ActivityList: React.FC = () => {
         />
       )}
       <Drawer
+        key="activeDetial"
         width={400}
         open={showDetail}
         onClose={() => {
@@ -175,6 +188,20 @@ const ActivityList: React.FC = () => {
             columns={columns as ProDescriptionsItemProps<API.Activity>[]}
           />
         )}
+      </Drawer>
+      <Drawer
+        key="joindetai"
+        width={'60%'}
+        open={showJoinDetail}
+        onClose={() => {
+          setCurrentRow(undefined);
+          setShowJoinDetail(false);
+        }}
+        bodyStyle={{ padding: 0, paddingTop: 24 }}
+        title="用户参与详情"
+        closable={false}
+      >
+        {currentRow?.id && <JoinList activityId={currentRow?.id} />}
       </Drawer>
     </PageContainer>
   );

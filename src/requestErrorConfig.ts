@@ -25,6 +25,7 @@ interface ResponseStructure {
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const errorConfig: RequestConfig = {
+  baseURL: 'https://www.shuzhuyun.com',
   // 错误处理： umi@3 的错误处理方案。
   errorConfig: {
     // 错误抛出
@@ -91,7 +92,7 @@ export const errorConfig: RequestConfig = {
       const token = localStorage.getItem('token');
       const { headers } = config;
       // 拦截请求配置，进行个性化处理。
-      const url = '/api' + config?.url;
+      const url = '/zhuluoji' + config?.url;
       return {
         ...config,
         url,

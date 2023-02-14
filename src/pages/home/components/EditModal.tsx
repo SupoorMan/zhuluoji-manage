@@ -72,7 +72,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
 
   // 类型图片文件
   const [photoFileList, setPhotoFileList] = useState<Record<string, UploadFile[]>>({});
-  const [lastPhotoIndex, setLastPhotoIndex] = useState<string>();
+  // const [lastPhotoIndex, setLastPhotoIndex] = useState<string>();
 
   useEffect(() => {
     if (open) {
@@ -109,9 +109,9 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
       setPhotoFileList({});
       setProdFiles({});
       setDelIds([]);
-      setLastPhotoIndex(undefined);
+      // setLastPhotoIndex(undefined);
     }
-  }, [open, setPhotoFileList, setProdFiles, setLastPhotoIndex, setDelIds]);
+  }, [open, setPhotoFileList, setProdFiles, setDelIds]);
   if (!current) return <></>;
   const handleUploadFile = async (
     options: UploadRequestOption<any>,
@@ -136,7 +136,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
           photoFileList[index] = [...photoFileList[index], nFile];
           setPhotoFileList({ ...photoFileList });
           const currentIndex = photos.findIndex(
-            (n: { rowKey: string }) => `${n.rowKey}` === `${index}`,
+            (n: { rowKey: string | number }) => `${n.rowKey}` === `${index}`,
           );
           photos[currentIndex].images = photoFileList[index].map((n) => n.url).toString();
           formRef.current?.setFieldValue('photo', photos);
@@ -146,7 +146,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
           setProdFiles({ ...prodFiles });
           const fAndC = index.split('_');
           const currentIndex = photos.findIndex(
-            (n: { rowKey: string }) => `${n.rowKey}` === fAndC[0],
+            (n: { rowKey: string | number }) => `${n.rowKey}` === fAndC[0],
           );
           const cIndex = photos[currentIndex].list.findIndex((n: { id: string; sid: string }) =>
             n.id ? `${n.id}` === fAndC[1] : n.sid === fAndC[1],
@@ -179,7 +179,7 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
 
       onAfterAdd: (defaultValue: any) => {
         const _id = defaultValue.sid;
-        setLastPhotoIndex(_id);
+        // setLastPhotoIndex(_id);
         photoFileList[_id] = [];
         setPhotoFileList({ ...photoFileList });
       },
@@ -283,135 +283,134 @@ const CreateTeamModal = <T extends { [key: string]: any }>(props: Iprops<T>) => 
                     );
                   },
                 },
+                {
+                  valueType: 'formList',
+                  title: '相关商品',
+                  dataIndex: 'list',
+                  colProps: { md: 24 },
+                  fieldProps: {
+                    copyIconProps: false,
+                    creatorRecord: { topIndex: rowKey, sid: nanoid() },
+                    creatorButtonProps: {
+                      creatorButtonText: '新商品',
+                      block: false,
+                      position: 'top',
+                      type: 'link',
+                      style: { right: 0, marginTop: -30, position: 'absolute' },
+                    },
+                    onAfterAdd: (defaultValue: any) => {
+                      const _fid = defaultValue.topId || defaultValue.topIndex;
+                      console.log(_fid);
+                      const recordIndex = _fid + '_' + defaultValue.sid;
+                      if (!prodFiles[recordIndex]) {
+                        prodFiles[recordIndex] = [];
+                        setProdFiles(prodFiles);
+                      }
+                    },
+                    itemRender: ({ listDom, action }: any, { record, index }: any) => {
+                      const _fid = record.topId || record.topIndex;
+                      const _id = record.id || record.sid;
+                      const recordIndex = _fid + '_' + _id;
+                      return (
+                        <Card
+                          type="inner"
+                          title={record.names || '商品' + (index + 1)}
+                          size="small"
+                          extra={
+                            <a
+                              onClick={() => {
+                                if (record.id) {
+                                  setDelIds([...delIds, record.id]);
+                                }
+                              }}
+                            >
+                              {action}
+                            </a>
+                          }
+                          style={{ margin: 12 }}
+                        >
+                          <Space>
+                            <ProFormUploadButton
+                              title="上传图片"
+                              listType="picture-card"
+                              name="images"
+                              max={1}
+                              colProps={{ span: 24 }}
+                              fileList={prodFiles[recordIndex] || []}
+                              formItemProps={{ style: { marginBottom: 0 } }}
+                              fieldProps={{
+                                onPreview: (file) => {
+                                  if (file && file?.url) {
+                                    setPriviewSrc(file?.url);
+                                    setVisible(true);
+                                  }
+                                },
+                                customRequest: (options) =>
+                                  handleUploadFile(options, recordIndex, true),
+                                onRemove: async (file: UploadFile<any>) => {
+                                  if (file?.url && (await handleRemove(file.url))) {
+                                    let photos = formRef.current?.getFieldValue('photo');
+                                    const currentIndex = photos.findIndex(
+                                      (n: { rowKey: any }) => n.rowKey === _fid,
+                                    );
+                                    photos[currentIndex].list[_id].images = '';
+                                    prodFiles[recordIndex] = [];
+                                    setProdFiles({ ...prodFiles });
+                                  }
+                                  return true;
+                                },
+                              }}
+                            />
+                            {listDom}
+                          </Space>
+                        </Card>
+                      );
+                    },
+                  },
+                  columns: [
+                    {
+                      valueType: 'group',
+                      colProps: { md: 24 },
+                      columns: [
+                        {
+                          dataIndex: 'names',
+                          colProps: { span: 12 },
+                          fieldProps: {
+                            placeholder: '商品名称',
+                          },
+                        },
+                        {
+                          dataIndex: 'introduction',
+                          colProps: { span: 24 },
+                          fieldProps: {
+                            placeholder: '简介',
+                          },
+                        },
+                        {
+                          dataIndex: 'brands',
+                          colProps: { span: 12 },
+                          width: 'md',
+                          fieldProps: {
+                            placeholder: '品牌名称',
+                          },
+                        },
+
+                        {
+                          colProps: { span: 12 },
+                          width: 'md',
+                          dataIndex: 'values',
+                          valueType: 'money',
+                          fieldProps: {
+                            placeholder: '参考价',
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
               ]
             : [];
         },
-      },
-      {
-        valueType: 'formList',
-        title: '相关商品',
-        dataIndex: 'list',
-        colProps: { md: 24 },
-
-        fieldProps: {
-          copyIconProps: false,
-          creatorRecord: { topIndex: lastPhotoIndex, sid: nanoid() },
-
-          creatorButtonProps: {
-            creatorButtonText: '新商品',
-            block: false,
-            position: 'top',
-            type: 'link',
-            style: { right: 0, marginTop: -30, position: 'absolute' },
-          },
-
-          onAfterAdd: (defaultValue: any) => {
-            const _fid = defaultValue.topId || defaultValue.topIndex;
-            const recordIndex = _fid + '_' + defaultValue.sid;
-            if (!prodFiles[recordIndex]) {
-              prodFiles[recordIndex] = [];
-              setProdFiles(prodFiles);
-            }
-          },
-          itemRender: ({ listDom, action }: any, { record, index }: any) => {
-            const _fid = record.topId || record.topIndex;
-            const _id = record.id || record.sid;
-            const recordIndex = _fid + '_' + _id;
-            return (
-              <Card
-                type="inner"
-                title={record.names || '商品' + index + 1}
-                size="small"
-                extra={
-                  <a
-                    onClick={() => {
-                      if (record.id) {
-                        setDelIds([...delIds, record.id]);
-                      }
-                    }}
-                  >
-                    {action}
-                  </a>
-                }
-                style={{ margin: 12 }}
-              >
-                <Space>
-                  <ProFormUploadButton
-                    title="上传图片"
-                    listType="picture-card"
-                    name="images"
-                    max={1}
-                    colProps={{ span: 24 }}
-                    fileList={prodFiles[recordIndex] || []}
-                    formItemProps={{ style: { marginBottom: 0 } }}
-                    fieldProps={{
-                      onPreview: (file) => {
-                        if (file && file?.url) {
-                          setPriviewSrc(file?.url);
-                          setVisible(true);
-                        }
-                      },
-                      customRequest: (options) => handleUploadFile(options, recordIndex, true),
-                      onRemove: async (file: UploadFile<any>) => {
-                        if (file?.url && (await handleRemove(file.url))) {
-                          let photos = formRef.current?.getFieldValue('photo');
-                          const currentIndex = photos.findIndex(
-                            (n: { rowKey: any }) => n.rowKey === _fid,
-                          );
-                          photos[currentIndex].list[_id].images = '';
-                          prodFiles[recordIndex] = [];
-                          setProdFiles({ ...prodFiles });
-                        }
-                        return true;
-                      },
-                    }}
-                  />
-                  {listDom}
-                </Space>
-              </Card>
-            );
-          },
-        },
-        columns: [
-          {
-            valueType: 'group',
-            colProps: { md: 24 },
-            columns: [
-              {
-                dataIndex: 'names',
-                colProps: { span: 12 },
-                fieldProps: {
-                  placeholder: '商品名称',
-                },
-              },
-              {
-                dataIndex: 'introduction',
-                colProps: { span: 24 },
-                fieldProps: {
-                  placeholder: '简介',
-                },
-              },
-              {
-                dataIndex: 'brands',
-                colProps: { span: 12 },
-                width: 'md',
-                fieldProps: {
-                  placeholder: '品牌名称',
-                },
-              },
-
-              {
-                colProps: { span: 12 },
-                width: 'md',
-                dataIndex: 'values',
-                valueType: 'money',
-                fieldProps: {
-                  placeholder: '参考价',
-                },
-              },
-            ],
-          },
-        ],
       },
     ],
   };

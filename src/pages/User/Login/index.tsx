@@ -1,6 +1,7 @@
 import { login } from '@/services/miniprogram/manageUser';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
+import Footer from '@/components/Footer';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useModel, Helmet } from '@umijs/max';
 import { Alert, message, Tabs } from 'antd';
@@ -78,7 +79,7 @@ const Login: React.FC = () => {
   return (
     <div className={containerClassName}>
       <Helmet>
-        <title>登录页 - {Settings.title}</title>
+        <title>{Settings.title}</title>
       </Helmet>
       <div
         style={{
@@ -92,7 +93,7 @@ const Login: React.FC = () => {
             maxWidth: '75vw',
           }}
           // logo={<img alt="logo" src="/logo.svg" />}
-          title="酷酷的侏罗纪vip"
+          title="酷酷的侏罗纪"
           subTitle={'小程序数据管理中台'}
           initialValues={{
             autoLogin: true,
@@ -162,7 +163,7 @@ const Login: React.FC = () => {
           </div>
         </LoginForm>
       </div>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 };
